@@ -3,6 +3,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { agentAuthRouter } from './routes/agentAuth.js';
 import { applicationsRouter } from './routes/applications.js';
 import { adminRouter } from './routes/admin.js';
@@ -11,15 +13,19 @@ import { chatRouter } from './routes/chat.js';
 import { inventoryRouter } from './routes/inventory.js';
 import { inventoryPublicRouter } from './routes/inventoryPublic.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.set('trust proxy', 1);
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Inalis muna para hindi harangan ang mga assets at inline scripts ng frontend mo
+}));
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '').split(',').map(s => s.trim()).filter(Boolean);
 app.use(cors({
   origin(origin, cb) {
-    // same-origin tools (curl, server-to-server) send no Origin header
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
     cb(new Error('Not allowed by CORS'));
   },
@@ -29,6 +35,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
 
+// API Routes
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/inventory/public', inventoryPublicRouter);
 app.use('/api/applications', applicationsRouter);
@@ -38,13 +45,19 @@ app.use('/api/admin/inventory', inventoryRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/chat', chatRouter);
 
-// Never leak stack traces / raw DB errors to the client.
+// I-serve ang static frontend files mula sa root folder (dalawang level pataas mula sa src)
+app.use(express.static(path.join(__dirname, '../../')));
+
+// Fallback para sa anumang route na hindi natagpuan sa API
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../index.html'));
+});
+
+// Error Handler
 app.use((err, req, res, next) => {
   console.error(err);
   if (res.headersSent) return next(err);
   if (err.message === 'Not allowed by CORS') return res.status(403).json({ error: 'Forbidden.' });
-  // Body-parser choked on malformed JSON — that's a bad request, not a
-  // server fault, and shouldn't be reported as a 500.
   if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'Malformed request.' });
   if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'File is too large.' });
   if (err.name === 'MulterError') return res.status(400).json({ error: 'There was a problem with one of your files.' });
