@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Become a Dealer — DubShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dealer-application.css">
+<style>
+  * { box-sizing: border-box; }
+  .nav { position: sticky; top: 0; z-index: 1000; background: #000000 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1320px; margin: 0 auto; padding: 16px 40px; position: relative; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo img { height: 40px; width: auto; display: block; object-fit: contain; }
+  .nav-links { display: flex; gap: 30px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff; align-items: center; list-style: none; margin: 0; padding: 0; }
+  .nav-links a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+  .nav-links a:hover, .nav-links a.active { color: #9ca3af; }
+  .nav-toggle { display: none; background: none; border: none; color: #ffffff; cursor: pointer; padding: 8px; }
+  .nav-menu { display: none; }
+  @media (max-width: 1000px) {
+    .nav-inner { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; align-items: center; justify-content: center; }
+    .nav.is-menu-open .nav-menu { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #000000; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 24px; gap: 16px; z-index: 999; }
+    .nav.is-menu-open .nav-menu a { color: #ffffff; font-family: 'Montserrat', sans-serif; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: 0.1em; }
+  }
+  .site-footer { background: #151922; color: rgba(255, 255, 255, 0.75); padding: 40px 40px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 13px; margin-top: 20px; }
+  .site-footer-inner { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .site-footer a { color: rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo" aria-label="DubShop — Home">
+      <img src="../assets/images/Dubshop logo.webp" alt="Dubshop logo">
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">HOME</a></li>
+      <li><a href="../mags.html">MAGS</a></li>
+      <li><a href="../4x4.html">4X4</a></li>
+      <li><a href="../shop.html">TIRE</a></li>
+      <li><a href="../tire-calculator/tire-calculator.html">TIRE CALC</a></li>
+      <li><a href="index.html" class="active">DEALER</a></li>
+      <li><a href="../index.html#contact">CONTACT</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav-menu" id="nav-menu">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../mags.html">Mags</a></li>
+      <li><a href="../4x4.html">4x4</a></li>
+      <li><a href="../shop.html">Tire</a></li>
+      <li><a href="../tire-calculator/tire-calculator.html">Tire Calculator</a></li>
+      <li><a href="index.html">Become a Dealer</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <h1>Become a Dealer</h1>
+  <p class="lede">Apply to carry DubShop mags, tires, and 4x4 parts. Five short steps — takes about 10 minutes.</p>
+
+  <!-- ========== STEP RAIL ========== -->
+  <nav class="step-rail" id="stepRail" aria-label="Application steps">
+    <button type="button" class="step-pill" data-step="1">1 Business</button>
+    <button type="button" class="step-pill" data-step="2">2 Property</button>
+    <button type="button" class="step-pill" data-step="3">3 Documents</button>
+    <button type="button" class="step-pill" data-step="4">4 References</button>
+    <button type="button" class="step-pill" data-step="5">5 Review</button>
+  </nav>
+
+  <form id="dealerForm" novalidate>
+
+    <!-- ========== STEP 1 — BUSINESS INFORMATION ========== -->
+    <section class="step" data-step="1">
+      <h2>Business Information</h2>
+      <p class="sub">Tell us about your business</p>
+
+      <div class="field"><label for="business_name">Business name *</label>
+        <input id="business_name" name="business_name" type="text" required></div>
+
+      <div class="field"><label for="business_type">Business type</label>
+        <select id="business_type" name="business_type">
+          <option value="">Select one</option>
+          <option>Retail Shop</option>
+          <option>Auto Repair / Service Center</option>
+          <option>Wholesale / Distributor</option>
+          <option>Other</option>
+        </select></div>
+
+      <div class="row-2">
+        <div class="field"><label for="contact_person">Contact person *</label>
+          <input id="contact_person" name="contact_person" type="text" required></div>
+        <div class="field"><label for="contact_position">Position</label>
+          <input id="contact_position" name="contact_position" type="text" placeholder="Owner, Manager..."></div>
+      </div>
+
+      <div class="field"><label for="business_address">Business address *</label>
+        <input id="business_address" name="business_address" type="text" required></div>
+
+      <div class="row-3">
+        <div class="field"><label for="city">City *</label>
+          <input id="city" name="city" type="text" required></div>
+        <div class="field"><label for="province">Province *</label>
+          <input id="province" name="province" type="text" required></div>
+        <div class="field"><label for="postal_code">Postal code</label>
+          <input id="postal_code" name="postal_code" type="text" inputmode="numeric"></div>
+      </div>
+
+      <div class="row-2">
+        <div class="field"><label for="contact_number">Contact number *</label>
+          <input id="contact_number" name="contact_number" type="tel" inputmode="tel" placeholder="09XX XXX XXXX" required></div>
+        <div class="field"><label for="email">Email *</label>
+          <input id="email" name="email" type="email" required></div>
+      </div>
+
+      <div class="row-2">
+        <div class="field"><label for="website">Website</label>
+          <input id="website" name="website" type="text" placeholder="optional"></div>
+        <div class="field"><label for="facebook_page">Facebook page</label>
+          <input id="facebook_page" name="facebook_page" type="text" placeholder="optional"></div>
+      </div>
+
+      <div class="field"><label for="years_in_business">Years in business</label>
+        <input id="years_in_business" name="years_in_business" type="text" placeholder="e.g. 5"></div>
+
+      <p class="err" data-err-for="1" role="alert"></p>
+    </section>
+
+    <!-- ========== STEP 2 — BUSINESS / PROPERTY INFORMATION ========== -->
+    <section class="step" data-step="2" hidden>
+      <h2>Business / Property Information</h2>
+      <p class="sub">Where the business actually operates from</p>
+
+      <label class="check-row"><input type="checkbox" id="same_as_business" checked>
+        Store address is the same as the business address</label>
+
+      <div class="field" id="storeAddressField" hidden><label for="store_address">Store / business address</label>
+        <input id="store_address" name="store_address" type="text"></div>
+
+      <div class="field"><label for="property_status">Property status</label>
+        <select id="property_status" name="property_status">
+          <option value="">Select one</option>
+          <option value="OWNED">Owned</option>
+          <option value="RENTED">Rented</option>
+        </select></div>
+
+      <div class="field"><label for="store_size">Store size</label>
+        <input id="store_size" name="store_size" type="text" placeholder="e.g. 50 sqm"></div>
+
+      <div class="field"><label for="operation_info">Business operation info</label>
+        <textarea id="operation_info" name="operation_info" rows="3" placeholder="Operating hours, days open, etc."></textarea></div>
+
+      <div class="field"><label for="location_notes">Location notes</label>
+        <textarea id="location_notes" name="location_notes" rows="3" placeholder="Landmarks, directions — optional"></textarea></div>
+
+      <p class="err" data-err-for="2" role="alert"></p>
+    </section>
+
+    <!-- ========== STEP 3 — DOCUMENTS ========== -->
+    <section class="step" data-step="3" hidden>
+      <h2>Documents</h2>
+      <p class="sub">PDF, JPG, or PNG — 10MB max per file</p>
+
+      <div class="doc-row" data-doc-type="BUSINESS_PERMIT">
+        <div class="doc-label">Business Permit <span class="req-star">*</span></div>
+        <label class="doc-drop">
+          <input type="file" accept="application/pdf,image/jpeg,image/png" data-doc-input="BUSINESS_PERMIT">
+          <span class="doc-drop-text">Choose file…</span>
+        </label>
+        <p class="doc-file-name" data-doc-name="BUSINESS_PERMIT"></p>
+        <p class="err" data-doc-err="BUSINESS_PERMIT" role="alert"></p>
+      </div>
+
+      <div class="doc-row" data-doc-type="VALID_ID">
+        <div class="doc-label">Valid Government ID <span class="req-star">*</span></div>
+        <label class="doc-drop">
+          <input type="file" accept="application/pdf,image/jpeg,image/png" data-doc-input="VALID_ID">
+          <span class="doc-drop-text">Choose file…</span>
+        </label>
+        <p class="doc-file-name" data-doc-name="VALID_ID"></p>
+        <p class="err" data-doc-err="VALID_ID" role="alert"></p>
+      </div>
+
+      <div class="doc-row" data-doc-type="STORE_PHOTO">
+        <div class="doc-label">Store Photo</div>
+        <label class="doc-drop">
+          <input type="file" accept="application/pdf,image/jpeg,image/png" data-doc-input="STORE_PHOTO">
+          <span class="doc-drop-text">Choose file…</span>
+        </label>
+        <p class="doc-file-name" data-doc-name="STORE_PHOTO"></p>
+        <p class="err" data-doc-err="STORE_PHOTO" role="alert"></p>
+      </div>
+
+      <div class="doc-row" data-doc-type="OTHER">
+        <div class="doc-label">Other supporting document</div>
+        <label class="doc-drop">
+          <input type="file" accept="application/pdf,image/jpeg,image/png" data-doc-input="OTHER">
+          <span class="doc-drop-text">Choose file…</span>
+        </label>
+        <p class="doc-file-name" data-doc-name="OTHER"></p>
+        <p class="err" data-doc-err="OTHER" role="alert"></p>
+      </div>
+
+      <p class="hint">Reloading this page clears any files you've chosen — everything else is kept.</p>
+      <p class="err" data-err-for="3" role="alert"></p>
+    </section>
+
+    <!-- ========== STEP 4 — REFERENCES ========== -->
+    <section class="step" data-step="4" hidden>
+      <h2>References</h2>
+      <p class="sub">At least 1, up to 5 — suppliers, other partners, or business contacts</p>
+
+      <div id="referencesList"></div>
+      <button type="button" class="btn btn-ghost" id="addReferenceBtn">+ Add another reference</button>
+
+      <p class="err" data-err-for="4" role="alert"></p>
+    </section>
+
+    <!-- ========== STEP 5 — REVIEW & SUBMIT ========== -->
+    <section class="step" data-step="5" hidden>
+      <h2>Review &amp; Submit</h2>
+      <p class="sub">Check everything before you submit</p>
+
+      <div class="review-block">
+        <div class="review-head"><h3>Business Information</h3><button type="button" class="btn-edit" data-edit-step="1">Edit</button></div>
+        <dl class="review-list" id="reviewBusiness"></dl>
+      </div>
+
+      <div class="review-block">
+        <div class="review-head"><h3>Business / Property Information</h3><button type="button" class="btn-edit" data-edit-step="2">Edit</button></div>
+        <dl class="review-list" id="reviewProperty"></dl>
+      </div>
+
+      <div class="review-block">
+        <div class="review-head"><h3>Documents</h3><button type="button" class="btn-edit" data-edit-step="3">Edit</button></div>
+        <dl class="review-list" id="reviewDocuments"></dl>
+      </div>
+
+      <div class="review-block">
+        <div class="review-head"><h3>References</h3><button type="button" class="btn-edit" data-edit-step="4">Edit</button></div>
+        <div id="reviewReferences"></div>
+      </div>
+
+      <div class="declaration-box">
+        <p class="declaration-pending">Official Declaration &amp; Bank C.I. Authorization text: <strong>PENDING</strong> — the verbatim wording from the source SACI/Silverwind form has not been supplied yet. Nothing legally binding is being drafted here.</p>
+        <label class="check-row">
+          <input type="checkbox" id="declaration_accepted">
+          I confirm the information and documents provided in this application are accurate and complete to the best of my knowledge.
+        </label>
+      </div>
+
+      <p class="err" data-err-for="5" role="alert"></p>
+      <div id="submitResult"></div>
+    </section>
+
+    <!-- ========== NAV BUTTONS ========== -->
+    <div class="wizard-nav">
+      <button type="button" class="btn btn-secondary" id="backBtn" hidden>← Back</button>
+      <button type="button" class="btn" id="continueBtn">Continue →</button>
+      <button type="button" class="btn" id="submitBtn" hidden>Submit Application</button>
+    </div>
+  </form>
+
+  <!-- ========== SUCCESS SCREEN ========== -->
+  <section id="successScreen" hidden>
+    <div class="success-box">
+      <div class="success-check">✓</div>
+      <h2>Application Received</h2>
+      <p>Thank you for your interest in becoming a Silverwind / DubShop dealer. Your application has been received and will be reviewed by our team.</p>
+      <p class="success-ref">Application Reference: <span id="successRef"></span></p>
+      <p class="success-note">We will contact you using the information you provided.</p>
+      <a href="../index.html" class="btn">Back to DubShop</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <span>&copy; 2026 DubShop. Wheels &amp; Tires.</span>
+    <a href="../index.html">&larr; Back to DubShop</a>
+  </div>
+</footer>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const navElement = document.querySelector('.nav');
+  if (navToggle && navElement) {
+    navToggle.addEventListener('click', () => {
+      navElement.classList.toggle('is-menu-open');
+      navToggle.setAttribute('aria-expanded', navElement.classList.contains('is-menu-open'));
+    });
+  }
+</script>
+<script src="../assets/js/api-config.js"></script>
+<script src="js/config.js"></script>
+<script src="js/dealer-application.js"></script>
+<script src="../assets/js/chatbot.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DubShop — Mags, Tires & 4x4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    background: #ffffff;
+    color: #111111;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #000000 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 16px 40px;
+    position: relative;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .logo img { 
+    height: 40px; 
+    width: auto; 
+    display: block;
+    object-fit: contain;
+  }
+  .nav-links {
+    display: flex;
+    gap: 38px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    transition: color 0.2s ease;
+  }
+  .nav-links a:hover, .nav-links a.active { color: #9ca3af; }
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .nav-menu { display: none; }
+
+  @media (max-width: 900px) {
+    .nav-inner { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; align-items: center; justify-content: center; }
+    .nav.is-menu-open .nav-menu {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: #000000;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 24px;
+      gap: 16px;
+      z-index: 999;
+    }
+    .nav.is-menu-open .nav-menu a { color: #ffffff; font-family: 'Montserrat', sans-serif; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: 0.1em; }
+  }
+
+  .hero-full-bg-section { width: 100%; margin: 0 0 50px 0; padding: 0; }
+  .hero-full-card {
+    position: relative;
+    background: url('assets/images/landing pages.jpg') center/cover no-repeat;
+    border-radius: 0;
+    overflow: hidden;
+    padding: 100px 80px;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.3);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-full-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.15) 100%);
+    z-index: 1;
+  }
+
+  .hero-full-content { position: relative; z-index: 2; max-width: 620px; margin-left: 40px; }
+  
+  /* DubShop Font Styling tulad ng Logo */
+  .hero-split-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(48px, 6.5vw, 84px);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    text-transform: lowercase;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+  
+  /* "dub" ay White */
+  .hero-split-title .dub-part {
+    color: #ffffff;
+  }
+  
+  /* "shop" ay Light Gray / Silver tulad sa logo */
+  .hero-split-title .shop-part {
+    color: #9ca3af;
+  }
+
+  .hero-full-content p { 
+    font-size: 16.5px; 
+    color: #f3f4f6; 
+    line-height: 1.65; 
+    margin-bottom: 30px; 
+    font-weight: 500; 
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .hero-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+  .btn-learn-more { display: inline-flex; align-items: center; justify-content: center; background: #ffffff; color: #0b0f17; padding: 15px 36px; border-radius: 100px; font-weight: 700; font-size: 14.5px; text-decoration: none; transition: background 0.2s, transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .btn-learn-more:hover { background: #e5e7eb; transform: translateY(-2px); }
+  .btn-shop-collection { display: inline-flex; align-items: center; justify-content: center; background: rgba(156, 163, 175, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #ffffff; border: 1.5px solid #9ca3af; padding: 15px 36px; border-radius: 100px; font-weight: 700; font-size: 14.5px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .btn-shop-collection:hover { background: #9ca3af; color: #0b0f17; border-color: #9ca3af; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(156, 163, 175, 0.4); }
+
+  .info-carousel-section { max-width: 1280px; margin: 0 auto 70px; padding: 0 20px; }
+  .info-carousel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .info-item-card { background: #ffffff; border: 2px solid #111111; border-radius: 20px; padding: 34px 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); transition: transform 0.3s ease; }
+  .info-item-card:hover { transform: translateY(-4px); }
+  .info-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .info-item-card h3 { font-size: 21px; font-weight: 900; color: #000000; margin-bottom: 8px; }
+  .info-item-card p { font-size: 14.5px; color: #333333; line-height: 1.6; margin: 0; font-weight: 500; }
+
+  .feat-section { padding: 80px 20px; background: #F5F5F7; }
+  .feat-container { max-width: 1240px; margin: 0 auto; }
+  .feat-header { text-align: center; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
+  .feat-header h2 { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; color: #1d1d1f; margin-bottom: 12px; }
+  .feat-header p.feat-subtitle { font-size: 15px; color: #515154; line-height: 1.6; margin: 0; }
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+  .feat-card { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; transition: transform 0.3s ease; display: flex; flex-direction: column; text-decoration: none; color: #1d1d1f; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+  .feat-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+  .feat-img { height: 260px; width: 100%; background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 20px; overflow: hidden; }
+  .feat-img img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+  .feat-card:hover .feat-img img { transform: scale(1.05); }
+  .feat-content { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; background: #ffffff; }
+  .feat-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; color: #1d1d1f; text-transform: uppercase; }
+  .feat-desc { font-size: 14.5px; color: #515154; line-height: 1.55; margin-bottom: 24px; flex-grow: 1; }
+  .feat-action { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #0066cc; display: flex; align-items: center; gap: 6px; }
+
+  .about-sub-section { padding: 90px 20px; background: #ffffff; }
+  .about-stack { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 50px; }
+  .about-stack-item { background: #F5F5F7; border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+  .about-stack-img { height: 280px; width: 100%; background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .about-stack-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .about-stack-content { padding: 40px; background: #F5F5F7; }
+  .about-stack-content h3 { font-size: 26px; font-weight: 800; margin-bottom: 14px; color: #1d1d1f; text-transform: uppercase; }
+  .about-stack-content p { font-size: 15px; color: #515154; line-height: 1.65; margin: 0; }
+
+  .contact-section { background: #F5F5F7; color: #1d1d1f; padding: 90px 20px; text-align: center; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+  .contact-content-plain { max-width: 700px; margin: 0 auto; }
+  .contact-content-plain h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; color: #1d1d1f; }
+  .contact-content-plain p { color: #515154; font-size: 15px; margin-bottom: 25px; }
+  .contact-info-grid { display: flex; flex-direction: column; gap: 8px; font-size: 15px; font-weight: 600; color: #1d1d1f; margin-bottom: 20px; }
+
+  .site-footer { background: #151922; color: rgba(255, 255, 255, 0.75); padding: 60px 40px 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 13.5px; }
+  .site-footer-inner { max-width: 1240px; margin: 0 auto; }
+  .site-footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
+  .site-footer-col h4 { color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; font-family: 'Montserrat', sans-serif; }
+  .site-footer-col p, .site-footer-col ul li a { color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.2s; }
+  .site-footer-col ul li a:hover { color: #ffffff; }
+  .site-footer-col ul { display: flex; flex-direction: column; gap: 10px; list-style: none; padding: 0; margin: 0; }
+  .site-footer-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px; font-size: 12px; color: rgba(255, 255, 255, 0.5); flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 900px) {
+    .hero-full-card { padding: 50px 24px; min-height: 380px; }
+    .hero-full-content { margin-left: 0; }
+    .info-carousel-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="DubShop — Home">
+      <img src="assets/images/Dubshop logo.webp" alt="Dubshop logo">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">HOME</a></li>
+      <li><a href="mags.html">MAGS</a></li>
+      <li><a href="4x4.html">4X4</a></li>
+      <li><a href="shop.html">TIRE</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">TIRE CALC</a></li>
+      <li><a href="dealer-application/index.html">DEALER</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav-menu" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mags.html">Mags</a></li>
+      <li><a href="4x4.html">4x4</a></li>
+      <li><a href="shop.html">Tire</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">Tire Calculator</a></li>
+      <li><a href="dealer-application/index.html">Become a Dealer</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-full-bg-section">
+  <div class="hero-full-card">
+    <div class="hero-full-content">
+      <h1 class="hero-split-title"><span class="dub-part">dub</span><span class="shop-part">shop</span></h1>
+      <p>Dubshop — Premium mags. High performance tires. Built for 4×4. Ready for anything.</p>
+      <div class="hero-buttons">
+        <a href="#info-cards-target" class="btn-learn-more">Learn More</a>
+        <a href="shop.html" class="btn-shop-collection">Shop Collection</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-carousel-section" id="info-cards-target">
+  <div class="info-carousel-grid">
+    <div class="info-item-card">
+      <div class="info-item-header"><span>⚙️</span><span>Our Heritage</span></div>
+      <h3>Decades of Experience</h3>
+      <p>With over 20 years in the automotive industry, we bring unmatched expertise.</p>
+    </div>
+    <div class="info-item-card">
+      <div class="info-item-header"><span>🎯</span><span>Our Mission</span></div>
+      <h3>Quality and Passion</h3>
+      <p>We are dedicated to providing only the best products, backed by our passion for cars.</p>
+    </div>
+    <div class="info-item-card">
+      <div class="info-item-header"><span>🤝</span><span>Our Service</span></div>
+      <h3>Customer First</h3>
+      <p>Our team is committed to exceptional service and support for every customer.</p>
+    </div>
+  </div>
+</section>
+
+<section class="feat-section">
+  <div class="feat-container">
+    <div class="feat-header">
+      <h2>FEATURED CATEGORIES</h2>
+      <p class="feat-subtitle">Explore our top product categories to upgrade your ride with performance, durability, and style. Whether you're hitting the trail or the tarmac, we've got what you need.</p>
+    </div>
+    <div class="feat-grid">
+      <a href="shop.html" class="feat-card">
+        <div class="feat-img"><img src="assets/images/tires/Winrun/winrun_00.jpg" alt="Tires"></div>
+        <div class="feat-content">
+          <h3 class="feat-title">TIRES</h3>
+          <p class="feat-desc">Conquer any terrain with high-performance tires built for grip, durability, and control.</p>
+          <span class="feat-action">Explore Tires <span>&rarr;</span></span>
+        </div>
+      </a>
+      <a href="mags.html" class="feat-card">
+        <div class="feat-img"><img src="assets/images/mags/BlackMamba/blackmamba_01.jpg" alt="Mags"></div>
+        <div class="feat-content">
+          <h3 class="feat-title">MAGS</h3>
+          <p class="feat-desc">Upgrade your look with premium mags designed for style and strength.</p>
+          <span class="feat-action">Explore Mags <span>&rarr;</span></span>
+        </div>
+      </a>
+      <a href="4x4.html" class="feat-card">
+        <div class="feat-img"><img src="assets/images/ford.png" alt="4x4 Gears"></div>
+        <div class="feat-content">
+          <h3 class="feat-title">4X4 GEARS</h3>
+          <p class="feat-desc">Be trail-ready with rugged 4x4 gear engineered for serious off-road performance.</p>
+          <span class="feat-action">Explore 4x4 Gears <span>&rarr;</span></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="about-sub-section">
+  <div class="about-stack">
+    <div class="about-stack-item">
+      <div class="about-stack-img"><img src="assets/images/mags/BlackMamba/blackmamba_01.jpg" alt="Mags Collection"></div>
+      <div class="about-stack-content">
+        <h3>About Our Mags Collection</h3>
+        <p>Sourced directly from trusted wheel manufacturers. We provide precise fitment guides based on your exact bolt patterns, offsets, and vehicle stance requirements to ensure a clean flush look.</p>
+      </div>
+    </div>
+    <div class="about-stack-item">
+      <div class="about-stack-img"><img src="assets/images/tires/Winrun/winrun_00.jpg" alt="Tires Stock"></div>
+      <div class="about-stack-content">
+        <h3>About Our Tires Stock</h3>
+        <p>Guaranteed fresh rubbers and high-performance treads. Designed for maximum road grip, low road noise, and long-lasting durability across passenger cars, SUVs, and pickups.</p>
+      </div>
+    </div>
+    <div class="about-stack-item">
+      <div class="about-stack-img"><img src="assets/images/ford.png" alt="4x4 Parts"></div>
+      <div class="about-stack-content">
+        <h3>About Our 4x4 Parts</h3>
+        <p>Gear up for your next adventure with premium off-road parts and accessories. From lift kits to heavy-duty accessories, we've got everything you need to transform your vehicle into a trail-ready beast.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="container" style="max-width: 1240px; margin: 0 auto; padding: 0 40px;">
+    <div class="contact-content-plain">
+      <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #86868b; margin-bottom: 8px;">Get in Touch</p>
+      <h2>Ready to Upgrade Your Ride?</h2>
+      <p>Send your vehicle model and required size or part. We will confirm stock and installation schedules right away.</p>
+      <div class="contact-info-grid">
+        <span data-setting="contact_mobile">Mobile: 0916-XXX-XXXX</span>
+        <span data-setting="contact_landline">Landline: 8XXX-XXXX</span>
+        <span style="font-size: 15px; color: #1d1d1f;" data-setting="contact_email">Email: inquiries@dubshop.com</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-grid">
+      <div class="site-footer-col">
+        <h4>DubShop</h4>
+        <p>Wheels &amp; Tires — Superior Grip. Authentic mags, performance tires, and 4x4 parts priced as listed.</p>
+      </div>
+      <div class="site-footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">HOME</a></li>
+          <li><a href="mags.html">MAGS</a></li>
+          <li><a href="4x4.html">4X4</a></li>
+          <li><a href="shop.html">TIRE</a></li>
+          <li><a href="tire-calculator/tire-calculator.html">TIRE CALC</a></li>
+          <li><a href="dealer-application/index.html">DEALER</a></li>
+          <li><a href="#contact">CONTACT</a></li>
+        </ul>
+      </div>
+      <div class="site-footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="mags.html">Wheels</a></li>
+          <li><a href="shop.html">Tires</a></li>
+          <li><a href="4x4.html">4x4 Parts</a></li>
+        </ul>
+      </div>
+      <div class="site-footer-col">
+        <h4>Contact Info</h4>
+        <p data-setting="contact_mobile">0916-XXX-XXXX</p>
+        <p data-setting="contact_landline">8XXX-XXXX</p>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>&copy; 2026 DubShop. Wheels &amp; Tires.</span>
+      <span>Dealer inquiries welcome — <a href="dealer-application/index.html" style="color:inherit;text-decoration:underline;">apply here</a>.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/api-config.js"></script>
+<script src="assets/js/db.js"></script>
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const navElement = document.querySelector('.nav');
+  if (navToggle && navElement) {
+    navToggle.addEventListener('click', () => {
+      navElement.classList.toggle('is-menu-open');
+      navToggle.setAttribute('aria-expanded', navElement.classList.contains('is-menu-open'));
+    });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof DB !== 'undefined') {
+      DB.loadSettings().then((s) => DB.applySettings(s)).catch((e) => console.warn(e));
+    }
+  });
+</script>
+<script src="assets/js/chatbot.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealer Application Portal — DubShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+<div class="speed-stripe"></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="portal-login-gate" class="admin-gate">
+  <div class="admin-card">
+    <h1>Dealer Application Portal</h1>
+    <p class="muted">Sign in with the agent account your admin created for you. This is separate from the main Admin Panel — it only opens Dealer Applications.</p>
+    <label class="fld"><span>Email</span><input type="email" id="portal-email" autocomplete="username"></label>
+    <label class="fld"><span>Password</span><input type="password" id="portal-password" autocomplete="current-password"></label>
+    <button class="btn btn-primary" id="portal-login-btn" style="width:100%; justify-content:center;">Sign in</button>
+    <p class="err" id="portal-login-error"></p>
+  </div>
+</div>
+
+<!-- ===== PORTAL ===== -->
+<div id="portal-app" style="display:none;">
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <div>
+        <h1>Dealer Application Portal</h1>
+        <p class="muted" id="portal-whoami"></p>
+      </div>
+      <div>
+        <button class="btn btn-outline-dark" id="portal-logout-btn">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container admin-main">
+    <h2 id="portal-welcome" class="portal-welcome">Welcome</h2>
+
+    <div class="portal-stats" id="portal-stats"></div>
+
+    <section class="admin-section">
+      <div class="admin-toolbar">
+        <input type="text" class="admin-search" id="portal-search" placeholder="Search business or contact name…">
+        <select class="admin-search" id="portal-status-filter" style="max-width:180px;">
+          <option value="">All statuses</option>
+          <option>NEW</option><option>UNDER_REVIEW</option><option>CONTACTED</option>
+          <option>QUALIFIED</option><option>APPROVED</option><option>REJECTED</option>
+        </select>
+        <span class="count" id="portal-count"></span>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table" id="portal-table"></table></div>
+    </section>
+  </main>
+</div>
+
+<!-- ===== APPLICATION DETAIL ===== -->
+<div class="admin-modal" id="portal-detail-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-portal-modal-close="1"></div>
+  <div class="admin-modal-panel" style="max-width:640px;">
+    <button class="admin-modal-close" data-portal-modal-close="1" aria-label="Close">✕</button>
+    <h2 id="portal-detail-title">Application</h2>
+    <div id="portal-detail-body"></div>
+  </div>
+</div>
+
+<script src="../assets/js/api-config.js"></script>
+<script src="js/dealer-portal.js"></script>
+</body>
+</html>

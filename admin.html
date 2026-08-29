@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — DubShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<div class="speed-stripe"></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-gate" class="admin-gate" style="display:none;">
+  <div class="admin-card">
+    <h1>Admin sign in</h1>
+    <p class="muted">Full access to the site. Agent accounts (for Dealer Applications only) sign in separately at the Dealer Application Portal, not here.</p>
+    <label class="fld"><span>Email</span><input type="email" id="login-email" autocomplete="username"></label>
+    <label class="fld"><span>Password</span><input type="password" id="login-password" autocomplete="current-password"></label>
+    <button class="btn btn-primary" id="login-btn" style="width:100%; justify-content:center;">Sign in</button>
+    <p class="err" id="login-error"></p>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="admin-panel" style="display:none;">
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <div>
+        <h1>DubShop Admin Panel</h1>
+        <p class="muted">Manage catalog inventory and site text securely in this browser.</p>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn btn-outline-dark" href="dealer-portal/index.html" target="_blank" rel="noopener">Dealer Application Portal ↗</a>
+        <button class="btn btn-outline-dark" id="logout-btn">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-warning">
+    <div class="container">
+      ⚠️ Changes save to <b>this browser only</b>. Use backup/restore in Site text &amp; contact to sync across devices.
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <div class="container admin-tabs-inner">
+      <button class="admin-tab active" data-tab="tires">Tires</button>
+      <button class="admin-tab" data-tab="mags">Mags</button>
+      <button class="admin-tab" data-tab="fourxfour">4x4</button>
+      <button class="admin-tab" data-tab="settings">Site text &amp; contact</button>
+      <button class="admin-tab" data-tab="inventory">Inventory</button>
+      <button class="admin-tab" data-tab="agents">Agents</button>
+    </div>
+  </div>
+
+  <main class="container admin-main">
+    <!-- TIRES -->
+    <section class="admin-section" id="tab-tires">
+      <div class="admin-toolbar">
+        <input type="text" class="admin-search" id="tires-search" placeholder="Filter tires…">
+        <span class="count" id="tires-count"></span>
+        <button class="btn btn-primary" data-add="tires">+ Add tire</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table" id="tires-table"></table></div>
+    </section>
+
+    <!-- MAGS -->
+    <section class="admin-section" id="tab-mags" hidden>
+      <div class="admin-toolbar">
+        <input type="text" class="admin-search" id="mags-search" placeholder="Filter mags…">
+        <span class="count" id="mags-count"></span>
+        <button class="btn btn-primary" data-add="mags">+ Add mag</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table" id="mags-table"></table></div>
+    </section>
+
+    <!-- 4x4 -->
+    <section class="admin-section" id="tab-fourxfour" hidden>
+      <div class="admin-toolbar">
+        <input type="text" class="admin-search" id="fourxfour-search" placeholder="Filter 4x4 items…">
+        <span class="count" id="fourxfour-count"></span>
+        <button class="btn btn-primary" data-add="fourxfour">+ Add 4x4 item</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table" id="fourxfour-table"></table></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="admin-section" id="tab-settings" hidden>
+      <div class="settings-grid" id="settings-form"></div>
+      <button class="btn btn-primary" id="save-settings">Save site text</button>
+      <span class="saved-note" id="settings-saved"></span>
+
+      <div class="backup-box">
+        <h3>Backup &amp; restore</h3>
+        <p class="muted">Download backups regularly to move data or prevent loss.</p>
+        <div class="backup-actions">
+          <button class="btn btn-dark" id="export-btn">⬇ Download backup</button>
+          <label class="btn btn-outline-dark" style="cursor:pointer;">⬆ Restore from backup
+            <input type="file" id="import-file" accept="application/json" style="display:none;">
+          </label>
+          <button class="btn btn-danger" id="reset-btn">Reset to original catalog</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="admin-section" id="tab-inventory" hidden>
+      <p class="muted" style="margin-bottom:14px;">
+        Central inventory — one product record for stock and price, shared by this panel, the website, and (later) the chatbot.
+        CSV import updates stock from the file; price is set here unless the CSV has a recognized price column.
+      </p>
+
+      <div class="admin-toolbar">
+        <input type="text" class="admin-search" id="inv-search" placeholder="Search SKU or product name…">
+        <select class="admin-search" id="inv-type-filter" style="max-width:200px;">
+          <option value="">All types</option>
+        </select>
+        <span class="count" id="inv-count"></span>
+        <span style="flex:1"></span>
+        <label class="btn btn-outline-dark" style="cursor:pointer;">⬆ Import CSV
+          <input type="file" id="inv-import-file" accept=".csv,text/csv" style="display:none;">
+        </label>
+      </div>
+      <p class="err" id="inv-import-status" style="min-height:1em;"></p>
+
+      <div class="admin-table-wrap"><table class="admin-table" id="inv-table"></table></div>
+    </section>
+
+    <!-- AGENTS -->
+    <section class="admin-section" id="tab-agents" hidden>
+      <p class="muted" style="margin-bottom:14px;">
+        Agent accounts sign in at the <a href="dealer-portal/index.html" target="_blank" rel="noopener">Dealer Application Portal</a> —
+        they never see this Admin Panel. Give each agent their email and password directly; there is no self sign-up.
+      </p>
+      <div class="admin-toolbar">
+        <span class="count" id="agents-count"></span>
+        <button class="btn btn-primary" id="add-agent-btn">+ Add agent</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table" id="agents-table"></table></div>
+    </section>
+  </main>
+</div>
+
+<!-- ===== ADD / EDIT AGENT ===== -->
+<div class="admin-modal" id="agent-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-agent-modal-close="1"></div>
+  <div class="admin-modal-panel" style="max-width:420px;">
+    <button class="admin-modal-close" data-agent-modal-close="1" aria-label="Close">✕</button>
+    <h2 id="agent-modal-title">Add agent</h2>
+    <label class="fld"><span>Full name</span><input type="text" id="agent-name"></label>
+    <label class="fld"><span>Email</span><input type="email" id="agent-email"></label>
+    <label class="fld" id="agent-password-field"><span>Password</span><input type="password" id="agent-password" autocomplete="new-password"></label>
+    <label class="fld"><span>Role</span>
+      <select id="agent-role">
+        <option value="agent">Agent — Dealer Applications only</option>
+        <option value="admin">Admin — full panel access</option>
+      </select>
+    </label>
+    <div class="edit-actions">
+      <button class="btn btn-primary" id="agent-save-btn">Save</button>
+      <button class="btn btn-outline-dark" data-agent-modal-close="1">Cancel</button>
+    </div>
+    <p class="err" id="agent-modal-error"></p>
+  </div>
+</div>
+
+<!-- ===== RESET AGENT PASSWORD ===== -->
+<div class="admin-modal" id="agent-reset-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-agent-reset-close="1"></div>
+  <div class="admin-modal-panel" style="max-width:380px;">
+    <button class="admin-modal-close" data-agent-reset-close="1" aria-label="Close">✕</button>
+    <h2>Reset password</h2>
+    <p class="muted" id="agent-reset-name" style="margin-bottom:14px;"></p>
+    <label class="fld"><span>New password</span><input type="password" id="agent-reset-password" autocomplete="new-password"></label>
+    <div class="edit-actions">
+      <button class="btn btn-primary" id="agent-reset-save-btn">Set new password</button>
+      <button class="btn btn-outline-dark" data-agent-reset-close="1">Cancel</button>
+    </div>
+    <p class="err" id="agent-reset-error"></p>
+  </div>
+</div>
+
+<!-- ===== INVENTORY: EDIT PRICE/STOCK ===== -->
+<div class="admin-modal" id="inv-edit-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-inv-edit-close="1"></div>
+  <div class="admin-modal-panel" style="max-width:380px;">
+    <button class="admin-modal-close" data-inv-edit-close="1" aria-label="Close">✕</button>
+    <h2 id="inv-edit-title">Edit product</h2>
+    <p class="muted" id="inv-edit-sku" style="margin-bottom:14px;"></p>
+    <label class="fld"><span>Price (₱)</span><input type="number" id="inv-edit-price" min="0" step="0.01" placeholder="Not set"></label>
+    <label class="fld"><span>Stock quantity</span><input type="number" id="inv-edit-stock" min="0" step="1"></label>
+    <div class="edit-actions">
+      <button class="btn btn-primary" id="inv-edit-save-btn">Save</button>
+      <button class="btn btn-outline-dark" data-inv-edit-close="1">Cancel</button>
+    </div>
+    <p class="err" id="inv-edit-error"></p>
+  </div>
+</div>
+
+<!-- ===== INVENTORY: DETAIL / HISTORY ===== -->
+<div class="admin-modal" id="inv-detail-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-inv-detail-close="1"></div>
+  <div class="admin-modal-panel" style="max-width:520px;">
+    <button class="admin-modal-close" data-inv-detail-close="1" aria-label="Close">✕</button>
+    <h2 id="inv-detail-title">Product</h2>
+    <div id="inv-detail-body"></div>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="admin-modal" id="edit-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop" data-modal-close="1"></div>
+  <div class="admin-modal-panel">
+    <button class="admin-modal-close" data-modal-close="1" aria-label="Close">✕</button>
+    <h2 id="edit-title">Edit</h2>
+    <div class="edit-fields" id="edit-fields"></div>
+    <div class="edit-actions">
+      <button class="btn btn-primary" id="save-item">Save</button>
+      <button class="btn btn-outline-dark" data-modal-close="1">Cancel</button>
+      <button class="btn btn-danger" id="delete-item">Delete</button>
+    </div>
+    <p class="err" id="edit-error"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/mags-data.js"></script>
+<script src="assets/js/api-config.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/admin.js"></script>
+<script src="assets/js/admin-inventory.js"></script>
+<script src="assets/js/admin-agents.js"></script>
+</body>
+</html>

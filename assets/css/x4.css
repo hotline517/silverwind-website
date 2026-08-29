@@ -1,0 +1,53 @@
+/* ============================================================
+   Fix para sa 4x4 Item List at Thumbnail Size
+   ============================================================ */
+.tire-row.x4-has-image,
+.x4-row.x4-has-image {
+  display: grid !important;
+  grid-template-columns: 80px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 16px !important;
+}
+
+.x4-row-media {
+  width: 80px !important;
+  height: 80px !important;
+  min-width: 80px !important;
+  min-height: 80px !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: #f8f9fa !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.x4-row-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.tire-row-right {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+}
+
+/* Responsive para sa mobile phones */
+@media (max-width: 720px) {
+  .tire-row.x4-has-image,
+  .x4-row.x4-has-image {
+    grid-template-columns: 60px minmax(0, 1fr) !important;
+  }
+  .x4-row-media {
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+    min-height: 60px !important;
+  }
+}

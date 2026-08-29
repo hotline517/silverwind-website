@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tire Size Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tire-calculator.css">
+<style>
+  * { box-sizing: border-box; }
+  .nav { position: sticky; top: 0; z-index: 1000; background: #000000 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1320px; margin: 0 auto; padding: 16px 40px; position: relative; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo img { height: 40px; width: auto; display: block; object-fit: contain; }
+  .nav-links { display: flex; gap: 30px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #ffffff; align-items: center; list-style: none; margin: 0; padding: 0; }
+  .nav-links a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+  .nav-links a:hover, .nav-links a.active { color: #9ca3af; }
+  .nav-toggle { display: none; background: none; border: none; color: #ffffff; cursor: pointer; padding: 8px; }
+  .nav-menu { display: none; }
+  @media (max-width: 1000px) {
+    .nav-inner { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; align-items: center; justify-content: center; }
+    .nav.is-menu-open .nav-menu { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #000000; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 24px; gap: 16px; z-index: 999; }
+    .nav.is-menu-open .nav-menu a { color: #ffffff; font-family: 'Montserrat', sans-serif; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: 0.1em; }
+  }
+  .site-footer { background: #151922; color: rgba(255, 255, 255, 0.75); padding: 40px 40px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 13px; margin-top: 20px; }
+  .site-footer-inner { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .site-footer a { color: rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo" aria-label="DubShop — Home">
+      <img src="../assets/images/Dubshop logo.webp" alt="Dubshop logo">
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">HOME</a></li>
+      <li><a href="../mags.html">MAGS</a></li>
+      <li><a href="../4x4.html">4X4</a></li>
+      <li><a href="../shop.html">TIRE</a></li>
+      <li><a href="tire-calculator.html" class="active">TIRE CALC</a></li>
+      <li><a href="../dealer-application/index.html">DEALER</a></li>
+      <li><a href="../index.html#contact">CONTACT</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav-menu" id="nav-menu">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../mags.html">Mags</a></li>
+      <li><a href="../4x4.html">4x4</a></li>
+      <li><a href="../shop.html">Tire</a></li>
+      <li><a href="tire-calculator.html">Tire Calculator</a></li>
+      <li><a href="../dealer-application/index.html">Become a Dealer</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <h1>Tire Size Calculator</h1>
+  <p class="lede">Compare your stock size against the size you want, and see exactly what changes.</p>
+
+  <!-- ========== 1. INPUT ========== -->
+  <section>
+    <div class="input-box">
+      <div class="veh-grid">
+        <select class="sel" id="vYear"><option value="">Year</option></select>
+        <select class="sel" id="vMake" disabled><option value="">Make</option></select>
+        <select class="sel" id="vModel" disabled><option value="">Model</option></select>
+        <select class="sel" id="vTrim" disabled><option value="">Trim</option></select>
+      </div>
+      <p class="hint" id="vHint">Pick your vehicle to fill in the stock size, or type it below.</p>
+
+      <div class="size-row">
+        <span class="size-label">Size 1<br>OEM</span>
+        <div class="field"><input class="size-input" id="w1" type="number" inputmode="numeric" min="1" max="999" placeholder="265" aria-label="Size 1 width"><span class="field-cap">Width</span></div>
+        <span class="sep">/</span>
+        <div class="field"><input class="size-input" id="a1" type="number" inputmode="numeric" min="1" max="150" placeholder="65" aria-label="Size 1 aspect ratio"><span class="field-cap">Ratio</span></div>
+        <span class="sep">R</span>
+        <div class="field"><input class="size-input" id="r1" type="number" inputmode="numeric" min="1" max="60" placeholder="17" aria-label="Size 1 rim"><span class="field-cap">Rim</span></div>
+      </div>
+
+      <div class="size-row">
+        <span class="size-label">Size 2<br>New</span>
+        <div class="field"><input class="size-input" id="w2" type="number" inputmode="numeric" min="1" max="999" placeholder="245" aria-label="Size 2 width"><span class="field-cap">Width</span></div>
+        <span class="sep">/</span>
+        <div class="field"><input class="size-input" id="a2" type="number" inputmode="numeric" min="1" max="150" placeholder="45" aria-label="Size 2 aspect ratio"><span class="field-cap">Ratio</span></div>
+        <span class="sep">R</span>
+        <div class="field"><input class="size-input" id="r2" type="number" inputmode="numeric" min="1" max="60" placeholder="17" aria-label="Size 2 rim"><span class="field-cap">Rim</span></div>
+      </div>
+
+      <button class="btn" id="compareBtn">Compare</button>
+      <p class="err" id="err" role="alert"></p>
+    </div>
+  </section>
+
+  <div id="results" hidden>
+
+    <div class="units">
+      <button id="uMetric" aria-pressed="true">mm · km/h</button>
+      <button id="uImperial" aria-pressed="false">in · mph</button>
+    </div>
+
+    <!-- ========== 2. VISUAL COMPARISON ========== -->
+    <section class="viz-block">
+      <h2>Tire Size Comparison Visualizer</h2>
+      <p class="sub">Profile view — overall diameter &amp; section width</p>
+      <svg class="viz" id="vizProfile" role="img" aria-label="Profile comparison of the two tire sizes"></svg>
+
+      <p class="sub" style="margin-top:26px">Front view — rim, sidewall, circumference</p>
+      <svg class="viz" id="vizFront" role="img" aria-label="Front comparison of the two tire and wheel assemblies"></svg>
+
+      <div class="viz-key">
+        <span><i class="swatch sw1"></i><span id="key1">Size 1</span></span>
+        <span><i class="swatch sw2"></i><span id="key2">Size 2</span></span>
+      </div>
+    </section>
+
+    <!-- ========== 3. MEASUREMENTS ========== -->
+    <section>
+      <h2>Measurements</h2>
+      <p class="sub">Calculated from the entered sizes</p>
+      <table>
+        <thead><tr><th>Spec</th><th id="thOem">Size 1</th><th id="thNew">Size 2</th><th>Diff</th></tr></thead>
+        <tbody id="specBody"></tbody>
+      </table>
+    </section>
+
+    <!-- ========== 4. SPEEDOMETER ERROR ========== -->
+    <section>
+      <h2>Speedometer Error</h2>
+      <p class="sub">What your speedometer shows vs. how fast you're going</p>
+      <table>
+        <thead><tr><th>Speedometer reads</th><th>Actual speed</th><th>Off by</th></tr></thead>
+        <tbody id="speedoBody"></tbody>
+      </table>
+    </section>
+
+    <!-- ========== 5. SIZE ASSESSMENT ========== -->
+    <section>
+      <h2>Size Assessment</h2>
+      <p class="sub" id="assessSizes"></p>
+      <div class="assess">
+        <p class="assess-badge" id="badge">—</p>
+        <p class="assess-delta" id="delta"></p>
+        <div class="scale">
+          <div class="scale-track">
+            <i class="z-warn" style="left:25%;width:50%"></i>
+            <i class="z-ok" style="left:35%;width:30%"></i>
+            <span class="marker" id="marker" style="left:50%"></span>
+          </div>
+          <div class="scale-ticks"><span>−10%</span><span>−5%</span><span>0</span><span>+5%</span><span>+10%</span></div>
+        </div>
+        <p class="body" id="assessBody"></p>
+        <ul id="assessList"></ul>
+        <p class="note">Based on tire-size calculations only. Check fitment, clearance, and load requirements against your vehicle manufacturer's specifications before installation.</p>
+      </div>
+    </section>
+
+    <!-- ========== 6. OUR PRODUCTS ========== -->
+    <section>
+      <h2>From Our Catalog</h2>
+      <p class="sub">Matched to the size you entered</p>
+      <div id="recs"></div>
+      <p class="demo-flag">Demo catalog data — replace with the live product file</p>
+    </section>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <span>&copy; 2026 DubShop. Wheels &amp; Tires.</span>
+    <a href="../index.html">&larr; Back to DubShop</a>
+  </div>
+</footer>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const navElement = document.querySelector('.nav');
+  if (navToggle && navElement) {
+    navToggle.addEventListener('click', () => {
+      navElement.classList.toggle('is-menu-open');
+      navToggle.setAttribute('aria-expanded', navElement.classList.contains('is-menu-open'));
+    });
+  }
+</script>
+<script src="js/config.js"></script>
+<script src="js/units.js"></script>
+<script src="js/tireMath.js"></script>
+<script src="js/tireGraphic.js"></script>
+<script src="js/visualizer.js"></script>
+<script src="js/productService.js"></script>
+<script src="js/vehicleService.js"></script>
+<script src="js/recommendationService.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/inquiry.js"></script>
+<script src="js/app.js"></script>
+<script src="../assets/js/api-config.js"></script>
+<script src="../assets/js/chatbot.js" defer></script>
+</body>
+</html>

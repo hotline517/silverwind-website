@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop 4x4 — DubShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/x4.css">
+<style>
+  * { box-sizing: border-box; }
+  .nav { background: #000000 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1320px; margin: 0 auto; padding: 16px 40px; position: relative; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo img { height: 40px; width: auto; display: block; object-fit: contain; }
+  .nav-links {
+    display: flex;
+    gap: 38px;
+    font-family: 'Montserrat', sans-serif, Inter;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-links a { text-decoration: none; color: #ffffff; transition: color 0.2s ease; }
+  .nav-links a:hover, .nav-links a.active { color: #9ca3af !important; }
+  .nav-toggle { display: none; background: none; border: none; color: #ffffff !important; cursor: pointer; padding: 8px; }
+  .nav-menu { display: none; }
+
+  @media (max-width: 900px) {
+    .nav-inner { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; align-items: center; justify-content: center; }
+    .nav.is-menu-open .nav-menu {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: #000000;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 24px;
+      gap: 16px;
+      z-index: 999;
+    }
+    .nav.is-menu-open .nav-menu a { color: #ffffff; font-family: 'Montserrat', sans-serif; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: 0.1em; }
+  }
+
+  .shop-header {
+    position: relative;
+    background: url('assets/images/4x4 offroad.jpg') no-repeat center center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    image-rendering: -webkit-optimize-contrast;
+    padding: 90px 40px;
+    border-bottom: 2px solid rgba(156, 163, 175, 0.25);
+    color: #ffffff;
+  }
+  .shop-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0.85));
+    z-index: 1;
+  }
+  .shop-header .container {
+    position: relative;
+    z-index: 2;
+  }
+  .shop-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(36px, 5vw, 54px);
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+  }
+  .shop-header h1 span.dub-part { color: #ffffff; }
+  .shop-header h1 span.shop-part { color: #9ca3af; }
+  .shop-header p {
+    color: #e5e7eb;
+    font-size: 16px;
+    max-width: 720px;
+    line-height: 1.65;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  }
+
+  .site-footer { background: #151922; color: rgba(255, 255, 255, 0.75); padding: 60px 40px 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 13.5px; }
+  .site-footer-inner { max-width: 1240px; margin: 0 auto; }
+  .site-footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
+  .site-footer-col h4 { color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; font-family: 'Montserrat', sans-serif; }
+  .site-footer-col p, .site-footer-col ul li a { color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.2s; }
+  .site-footer-col ul li a:hover { color: #ffffff; }
+  .site-footer-col ul { display: flex; flex-direction: column; gap: 10px; list-style: none; padding: 0; margin: 0; }
+  .site-footer-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px; font-size: 12px; color: rgba(255, 255, 255, 0.5); flex-wrap: wrap; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="speed-stripe"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="DubShop — Home">
+      <img src="assets/images/Dubshop logo.webp" alt="Dubshop logo">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="mags.html">MAGS</a></li>
+      <li><a href="4x4.html" class="active">4X4</a></li>
+      <li><a href="shop.html">TIRE</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">TIRE CALC</a></li>
+      <li><a href="dealer-application/index.html">DEALER</a></li>
+      <li><a href="index.html#contact">CONTACT</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav-menu" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mags.html">Mags</a></li>
+      <li><a href="4x4.html">4x4</a></li>
+      <li><a href="shop.html">Tire</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">Tire Calculator</a></li>
+      <li><a href="dealer-application/index.html">Become a Dealer</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="shop-header">
+  <div class="container">
+    <h1 class="shop-title-in" data-setting="x4_page_title"><span class="dub-part">dub</span><span class="shop-part">shop</span> &mdash; 4x4 Parts</h1>
+    <p class="shop-sub-in" data-setting="x4_page_subtitle">Gear up for the trail with bumpers, lift kits, and off-road accessories built for real Philippine driving. Search by brand, category, or the vehicle you're fitting.</p>
+  </div>
+</header>
+
+<div class="filter-bar filter-bar-in" id="filter-bar">
+  <div class="container filter-bar-inner">
+    <label class="tm-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search-input" placeholder='Search parts, brand, or vehicle e.g. "Fortuner" or "Front Bumper"' aria-label="Search 4x4 parts">
+    </label>
+    <select class="tm-select" id="sort-select" aria-label="Sort">
+      <option value="default">Sort: Default</option>
+      <option value="low-high">Price: Low to High</option>
+      <option value="high-low">Price: High to Low</option>
+      <option value="brand">Brand: A-Z</option>
+    </select>
+  </div>
+  <div class="container filter-bar-inner ms-row" id="ms-row">
+    <div class="ms-dropdown" data-key="vehicle"><button type="button" class="ms-trigger">Vehicle<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button><div class="ms-panel"></div></div>
+    <div class="ms-dropdown" data-key="brand"><button type="button" class="ms-trigger">Brand<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button><div class="ms-panel"></div></div>
+    <div class="ms-dropdown" data-key="category"><button type="button" class="ms-trigger">Category<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button><div class="ms-panel"></div></div>
+    <button type="button" class="ms-clear" id="ms-clear-all" style="display:none;">Clear filters ✕</button>
+  </div>
+</div>
+
+<main class="container">
+  <div class="shop-results-bar"><div class="results-count" id="results-count">Showing all 4x4 parts</div></div>
+  <div class="tire-list" id="x4-list"></div>
+  <div class="empty-state" id="empty-state" style="display:none;"><div class="big">No parts match your search</div><p>Try a different vehicle, brand, or clear a filter.</p></div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-grid">
+      <div class="site-footer-col">
+        <h4>DubShop</h4>
+        <p>Wheels &amp; Tires — Superior Grip. Authentic mags, performance tires, and 4x4 parts priced as listed.</p>
+      </div>
+      <div class="site-footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">HOME</a></li>
+          <li><a href="mags.html">MAGS</a></li>
+          <li><a href="4x4.html">4X4</a></li>
+          <li><a href="shop.html">TIRE</a></li>
+          <li><a href="tire-calculator/tire-calculator.html">TIRE CALC</a></li>
+          <li><a href="dealer-application/index.html">DEALER</a></li>
+          <li><a href="index.html#contact">CONTACT</a></li>
+        </ul>
+      </div>
+      <div class="site-footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="mags.html">Wheels</a></li>
+          <li><a href="shop.html">Tires</a></li>
+          <li><a href="4x4.html">4x4 Parts</a></li>
+        </ul>
+      </div>
+      <div class="site-footer-col">
+        <h4>Contact Info</h4>
+        <p data-setting="contact_mobile">0916-XXX-XXXX</p>
+        <p data-setting="contact_landline">8XXX-XXXX</p>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>&copy; 2026 DubShop. Wheels &amp; Tires.</span>
+      <span>Dealer inquiries welcome — <a href="dealer-application/index.html" style="color:inherit;text-decoration:underline;">apply here</a>.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/x4-data.js"></script>
+<script src="assets/js/api-config.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/x4.js"></script>
+<script src="assets/js/motion.js"></script>
+<script src="assets/js/product-modal.js"></script>
+<script src="assets/js/image-zoom.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const navToggle = document.getElementById('nav-toggle');
+  const navElement = document.querySelector('.nav');
+  if (navToggle && navElement) {
+    navToggle.addEventListener('click', () => {
+      navElement.classList.toggle('is-menu-open');
+      navToggle.setAttribute('aria-expanded', navElement.classList.contains('is-menu-open'));
+    });
+  }
+  if (typeof DB !== 'undefined') { DB.loadSettings().then(s => DB.applySettings(s)); }
+});
+</script>
+<script src="assets/js/chatbot.js" defer></script>
+</body>
+</html>

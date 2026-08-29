@@ -1,0 +1,74 @@
+# ============================================================
+# Silverwind / DubShop — version control ignore rules
+# ============================================================
+
+# ---- Secrets: never commit ----
+# Real credentials live only in .env, which stays local. The committed
+# .env.example documents the required variable names with no real values.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*.json
+*serviceaccount*.json
+
+# ---- Dependencies (regenerate with `npm install`) ----
+node_modules/
+.npm/
+
+# ---- Private uploaded dealer documents ----
+# Applicants' business permits, government IDs, and store photos are
+# private records. They belong in the storage backend, never in the repo.
+# The folder itself is kept so a fresh clone has somewhere to write.
+dealer-backend/storage/documents/*
+!dealer-backend/storage/documents/.gitkeep
+
+# ---- Local database dumps / snapshots ----
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3
+*.db
+
+# ---- Logs & runtime ----
+*.log
+logs/
+npm-debug.log*
+pid
+*.pid
+*.seed
+
+# ---- Build / cache output ----
+dist/
+build/
+.next/
+.cache/
+coverage/
+.eslintcache
+
+# ---- Editor / OS junk ----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---- Temp / scratch ----
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+
+# ---- Tooling caches (generated) ----
+.impeccable/hook.cache.json

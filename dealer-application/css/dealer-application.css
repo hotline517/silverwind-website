@@ -1,0 +1,133 @@
+/* ============================================================
+   TOKENS — matches the tire-calculator light theme
+   ============================================================ */
+:root{
+  --bg:#FFFFFF;
+  --bg-soft:#F6F7F8;
+  --line:#E2E4E7;
+  --line-soft:#EFF0F2;
+  --text:#1A1D21;
+  --text-2:#555555;
+  --text-3:#777777;
+  --accent:#E5A900;
+  --ok:#1E8E4A;
+  --warn:#C67C0B;
+  --bad:#C0392B;
+  --f-body:"Inter",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:8px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px 60px}
+
+h1{font-size:26px;font-weight:700;letter-spacing:-.01em;margin:0 0 6px;text-align:center}
+.lede{color:var(--text-3);font-size:14px;margin:0 auto 22px;text-align:center;max-width:48ch}
+h2{font-size:19px;font-weight:600;margin:0 0 4px}
+h3{font-size:15px;font-weight:600;margin:0}
+.sub{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin:0 0 18px}
+
+/* ============================================================
+   STEP RAIL
+   ============================================================ */
+.step-rail{display:flex;gap:6px;overflow-x:auto;margin:0 0 24px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.step-pill{
+  flex:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;
+  padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--text-3);
+  cursor:pointer;white-space:nowrap;
+}
+.step-pill.is-current{background:var(--text);color:#fff;border-color:var(--text)}
+.step-pill.is-done{border-color:#CFE7DA;background:#EAF7EF;color:var(--ok)}
+
+/* ============================================================
+   FORM
+   ============================================================ */
+.step{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-soft);padding:20px;margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:500;color:var(--text-2);margin-bottom:5px}
+.field input, .field select, .field textarea{
+  width:100%;height:42px;background:#fff;border:1px solid var(--line);border-radius:6px;
+  color:var(--text);font-family:var(--f-body);font-size:15px;padding:0 12px;
+}
+.field textarea{height:auto;padding:10px 12px;resize:vertical;font-family:var(--f-body)}
+.field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.field input[aria-invalid="true"], .field select[aria-invalid="true"]{border-color:var(--bad)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:520px){.row-2,.row-3{grid-template-columns:1fr}}
+
+.check-row{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--text-2);margin-bottom:14px;line-height:1.5;cursor:pointer}
+.check-row input{width:19px;height:19px;flex:none;margin-top:2px;accent-color:var(--accent)}
+
+.err{color:var(--bad);font-family:var(--f-mono);font-size:11.5px;margin:8px 0 0;min-height:14px}
+.hint{font-family:var(--f-mono);font-size:10.5px;color:var(--text-3);margin:4px 0 14px}
+
+/* ============================================================
+   DOCUMENTS
+   ============================================================ */
+.doc-row{border:1px solid var(--line);border-radius:6px;background:#fff;padding:14px;margin-bottom:12px}
+.doc-label{font-size:14px;font-weight:600;margin-bottom:8px}
+.req-star{color:var(--bad)}
+.doc-drop{
+  display:flex;align-items:center;justify-content:center;height:42px;border:1px dashed var(--line);
+  border-radius:6px;cursor:pointer;font-family:var(--f-mono);font-size:12.5px;color:var(--text-3);background:var(--bg-soft);
+}
+.doc-drop:hover{border-color:var(--accent);color:var(--text)}
+.doc-drop input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.doc-file-name{font-family:var(--f-mono);font-size:12px;color:var(--text-2);margin:8px 0 0;word-break:break-all}
+
+/* ============================================================
+   REFERENCES
+   ============================================================ */
+.reference-card{border:1px solid var(--line);border-radius:6px;background:#fff;padding:14px;margin-bottom:12px;position:relative}
+.reference-card .ref-title{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px}
+.ref-remove{position:absolute;top:12px;right:12px;background:none;border:0;color:var(--text-3);cursor:pointer;font-size:13px}
+.ref-remove:hover{color:var(--bad)}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  height:46px;border:0;border-radius:6px;background:var(--text);color:#fff;
+  font-family:var(--f-body);font-size:14px;font-weight:600;letter-spacing:.02em;
+  cursor:pointer;padding:0 22px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+}
+.btn[hidden]{display:none}
+.btn:hover{background:#31363C}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{background:#fff;border:1px solid var(--line);color:var(--text)}
+.btn-secondary:hover{background:var(--bg-soft)}
+.btn-ghost{background:none;border:1px dashed var(--line);color:var(--text-2);width:100%;height:42px}
+.btn-edit{background:none;border:0;color:var(--accent);font-family:var(--f-mono);font-size:11px;cursor:pointer;text-decoration:underline}
+
+.wizard-nav{display:flex;gap:10px;justify-content:space-between}
+.wizard-nav .btn{flex:1}
+.wizard-nav #backBtn{flex:none;width:100px}
+
+/* ============================================================
+   REVIEW
+   ============================================================ */
+.review-block{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:16px;margin-bottom:14px}
+.review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.review-list{margin:0;display:grid;grid-template-columns:1fr 1.4fr;gap:6px 10px;font-size:13px}
+.review-list dt{color:var(--text-3)}
+.review-list dd{margin:0;color:var(--text)}
+.review-empty{color:var(--text-3);font-size:13px;font-style:italic}
+
+.declaration-box{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-soft);padding:16px;margin-bottom:16px}
+.declaration-pending{font-size:12.5px;color:var(--warn);background:#FDF3E4;border:1px solid #F5DEB0;border-radius:6px;padding:10px 12px;margin:0 0 12px;line-height:1.5}
+
+/* ============================================================
+   SUCCESS
+   ============================================================ */
+.success-box{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-soft);padding:36px 24px;text-align:center}
+.success-check{width:56px;height:56px;border-radius:50%;background:#EAF7EF;color:var(--ok);font-size:28px;line-height:56px;margin:0 auto 16px}
+.success-box h2{margin-bottom:10px}
+.success-box p{color:var(--text-2);font-size:14px;line-height:1.6;margin:0 0 8px}
+.success-ref{font-family:var(--f-mono);font-size:16px;font-weight:600;color:var(--text)}
+.success-note{color:var(--text-3);font-size:13px}
+.success-box .btn{margin-top:16px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}

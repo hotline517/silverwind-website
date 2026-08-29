@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Silverwind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+     SHARED HEADER — same markup as index.html. Only 4 nav items
+     (Home, Mags, Tires, 4x4) — no more About Us / Contact / Shop
+     Now in the link list.
+     ============================================================ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="Silverwind — Home">
+      <img src="assets/images/Dubshop logo.webp" alt="Dubshop logo">
+      <span class="logo-text">Silverwind</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mags.html">Mags</a></li>
+      <li><a href="shop.html">Tires</a></li>
+      <li><a href="4x4.html">4x4</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">Tire Calc</a></li>
+      <li><a href="dealer-application/index.html">Dealer</a></li>
+    </ul>
+
+    <div class="nav-spacer"></div>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <ul class="nav-menu" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mags.html">Mags</a></li>
+      <li><a href="shop.html">Tires</a></li>
+      <li><a href="4x4.html">4x4</a></li>
+      <li><a href="tire-calculator/tire-calculator.html">Tire Calculator</a></li>
+      <li><a href="dealer-application/index.html">Become a Dealer</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================
+     PLACEHOLDER — full Contact page design comes in a later
+     phase. This keeps the route working and on-brand for now.
+     ============================================================ -->
+<main>
+  <section class="placeholder-section">
+    <div class="container">
+      <div class="placeholder-inner">
+        <p class="placeholder-eyebrow">Contact</p>
+        <h1 class="placeholder-title">Tell us what you drive.</h1>
+        <p class="placeholder-text">Send your model and current tire size and we'll tell you what fits — and what it costs.</p>
+        <p class="placeholder-text" style="margin-bottom:8px;">
+          <b data-setting="contact_mobile">0916-XXX-XXXX</b> &middot; <b data-setting="contact_landline">8XXX-XXXX</b>
+        </p>
+        <span class="placeholder-note">Full Contact page — coming in a later phase</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer" style="padding: 0;">
+    <span>&copy; 2026 Silverwind. Mags &amp; Tires.</span>
+    <a href="index.html">Back to Home</a>
+    <a href="dealer-application/index.html">Dealer inquiries welcome — apply here</a>
+  </div>
+</footer>
+
+<script src="assets/js/motion.js"></script>
+<script src="assets/js/api-config.js"></script>
+<script src="assets/js/chatbot.js" defer></script>
+</body>
+</html>
