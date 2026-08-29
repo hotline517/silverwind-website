@@ -1,16 +1,12 @@
 // ============================================================
-// Admin panel — catalog/settings tabs still edit localStorage
-// directly (no account needed for that data). The login gate
-// itself now checks against the real dealer-backend, and only
-// admits accounts with role 'admin' — an 'agent' account is
-// refused here and pointed at the Dealer Application Portal.
+// Admin panel — fully connected to Render backend & PostgreSQL
 // ============================================================
 
-const ADMIN_API_BASE = window.SILVERWIND_API_BASE || (window.adminAuthConfig && window.adminAuthConfig.apiBaseUrl) || 'http://localhost:4100';
+const ADMIN_API_BASE = window.SILVERWIND_API_BASE || (window.adminAuthConfig && window.adminAuthConfig.apiBaseUrl) || 'https://silverwind-website.onrender.com';
 
 let currentTab = 'tires';
 let cache = { tires: [], mags: [], fourxfour: [] };
-let editing = { table: null, row: null }; // row=null means "new"[cite: 15]
+let editing = { table: null, row: null };
 
 const TABLE_CONFIGS = {
   tires: {
@@ -20,13 +16,13 @@ const TABLE_CONFIGS = {
       { key: 'brand', label: 'Brand', type: 'text', required: true },
       { key: 'model', label: 'Model', type: 'text', required: true },
       { key: 'size', label: 'Size — e.g. 175/70R13', type: 'text', required: true },
-      { key: 'width', label: 'Width — the 175 in 175/70R13', type: 'number' },
-      { key: 'aspect', label: 'Aspect ratio — the 70 in 175/70R13', type: 'number' },
-      { key: 'diameter', label: 'Rim diameter — the 13 in 175/70R13', type: 'number' },
+      { key: 'width', label: 'Width', type: 'number' },
+      { key: 'aspect', label: 'Aspect ratio', type: 'number' },
+      { key: 'diameter', label: 'Rim diameter', type: 'number' },
       { key: 'category', label: 'Category', type: 'text' },
       { key: 'price', label: 'Price (₱)', type: 'number', required: true },
       { key: 'inStock', label: 'In stock', type: 'checkbox' },
-      { key: 'inventorySku', label: 'Linked inventory SKU (optional) — look it up in the Inventory tab. When set, the site shows this SKU\'s live price/stock instead of the values above.', type: 'text' },
+      { key: 'inventorySku', label: 'Linked inventory SKU (optional)', type: 'text' },
       { key: 'img', label: 'Photo URL or path', type: 'image', full: true },
     ],
   },
@@ -38,13 +34,13 @@ const TABLE_CONFIGS = {
       { key: 'model', label: 'Model', type: 'text', required: true },
       { key: 'finish', label: 'Finish / colour', type: 'text' },
       { key: 'diameter', label: 'Rim diameter (inches)', type: 'number', required: true },
-      { key: 'width', label: 'Rim width — leave blank if unknown', type: 'text' },
-      { key: 'holes', label: 'Holes — comma separated, e.g. 5,6', type: 'holesArray' },
-      { key: 'price', label: 'Price (₱) — blank means "Contact for price"', type: 'number' },
+      { key: 'width', label: 'Rim width', type: 'text' },
+      { key: 'holes', label: 'Holes — comma separated', type: 'holesArray' },
+      { key: 'price', label: 'Price (₱)', type: 'number' },
       { key: 'variant', label: 'Variant label (optional)', type: 'text' },
       { key: 'listedUnder', label: 'Listed under (optional)', type: 'text' },
       { key: 'inStock', label: 'In stock', type: 'checkbox' },
-      { key: 'inventorySku', label: 'Linked inventory SKU (optional) — look it up in the Inventory tab. When set, the site shows this SKU\'s live price/stock instead of the values above.', type: 'text' },
+      { key: 'inventorySku', label: 'Linked inventory SKU (optional)', type: 'text' },
       { key: 'img', label: 'Photo URL or path', type: 'image', full: true },
     ],
   },
@@ -59,7 +55,7 @@ const TABLE_CONFIGS = {
       { key: 'vehicle', label: 'Fits which vehicles', type: 'text', full: true },
       { key: 'price', label: 'Price (₱)', type: 'number' },
       { key: 'inStock', label: 'In stock', type: 'checkbox' },
-      { key: 'inventorySku', label: 'Linked inventory SKU (optional) — look it up in the Inventory tab. When set, the site shows this SKU\'s live price/stock instead of the values above.', type: 'text' },
+      { key: 'inventorySku', label: 'Linked inventory SKU (optional)', type: 'text' },
       { key: 'img', label: 'Photo URL or path', type: 'image', full: true },
     ],
   },
@@ -93,10 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('save-settings').addEventListener('click', saveSettings);
-
-  document.getElementById('export-btn').addEventListener('click', doExport);
-  document.getElementById('import-file').addEventListener('change', doImport);
-  document.getElementById('reset-btn').addEventListener('click', doReset);
 });
 
 async function checkAdminSession() {
@@ -105,12 +97,9 @@ async function checkAdminSession() {
     if (!res.ok) throw new Error();
     const { agent } = await res.json();
     if (agent.role !== 'admin') {
-      // A real, valid login — just not for this panel. Sign the session
-      // out rather than leaving a half-authenticated agent sitting here.
       await fetch(`${ADMIN_API_BASE}/api/agent/logout`, { method: 'POST', credentials: 'include' });
       document.getElementById('login-gate').style.display = 'flex';
-      document.getElementById('login-error').textContent =
-        'This account is an Agent account — sign in at the Dealer Application Portal instead.';
+      document.getElementById('login-error').textContent = 'This account is an Agent account — sign in at the Dealer Application Portal instead.';
       return;
     }
     showPanel();
@@ -172,11 +161,9 @@ async function loadAllTables() {
 function renderTable(table) {
   const cfg = TABLE_CONFIGS[table];
   const rawSearch = document.getElementById(`${table}-search`).value;
-  
-  // SMART SEARCH: Tinatanggal ang lahat ng spaces at ginagawang lowercase para gumana kahit walang space o magkaiba ang casing
   const search = rawSearch.toLowerCase().replace(/\s+/g, '');
 
-  let rows = cache[table];
+  let rows = cache[table] || [];
   if (search) {
     rows = rows.filter(r => {
       const rowString = JSON.stringify(r).toLowerCase().replace(/\s+/g, '');
@@ -254,7 +241,7 @@ function closeEditModal() {
   document.getElementById('edit-modal').setAttribute('aria-hidden', 'true');
 }
 
-function saveItem() {
+async function saveItem() {
   const { table, row } = editing;
   const cfg = TABLE_CONFIGS[table];
   const errEl = document.getElementById('edit-error');
@@ -270,19 +257,19 @@ function saveItem() {
     payload[f.key] = v === '' ? null : v;
   }
 
-  if (row) DB.updateRow(table, row.id, payload);
-  else DB.addRow(table, payload);
+  if (row) await DB.updateRow(table, row.id, payload);
+  else await DB.addRow(table, payload);
 
   closeEditModal();
   showToast(row ? 'Saved.' : 'Added.');
   loadAllTables();
 }
 
-function deleteItem() {
+async function deleteItem() {
   const { table, row } = editing;
   if (!row) return;
   if (!confirm("Delete this item? This can't be undone.")) return;
-  DB.deleteRow(table, row.id);
+  await DB.deleteRow(table, row.id);
   closeEditModal();
   showToast('Deleted.');
   loadAllTables();
@@ -313,55 +300,15 @@ async function loadSettingsForm() {
   `).join('');
 }
 
-function saveSettings() {
+async function saveSettings() {
   const inputs = document.querySelectorAll('[data-setting-field]');
   const patch = {};
   inputs.forEach(inp => { patch[inp.dataset.settingField] = inp.value; });
-  DB.saveSettings(patch);
+  await DB.saveSettings(patch);
   const noteEl = document.getElementById('settings-saved');
   noteEl.style.color = '#15803D';
   noteEl.textContent = 'Saved ✓';
   setTimeout(() => { noteEl.textContent = ''; }, 2500);
-}
-
-// ---------- BACKUP: export / import / reset ----------
-function doExport() {
-  const data = DB.exportAll();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `silverwind-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Backup downloaded.');
-}
-
-function doImport(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      DB.importAll(data);
-      showToast('Backup restored.');
-      loadAllTables();
-      loadSettingsForm();
-    } catch (err) {
-      alert('Could not read that file: ' + err.message);
-    }
-    e.target.value = '';
-  };
-  reader.readAsText(file);
-}
-
-function doReset() {
-  if (!confirm('Reset everything back to the original catalog? Any edits you made will be lost (download a backup first if unsure).')) return;
-  DB.resetToDefaults();
-  showToast('Reset to defaults.');
-  loadAllTables();
-  loadSettingsForm();
 }
 
 // ---------- TOAST ----------

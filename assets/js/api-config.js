@@ -4,15 +4,14 @@
    It auto-detects the environment, so the same files work locally and in
    production with no edit at deploy time:
      - served from localhost / 127.0.0.1  -> local dev backend
-     - served from any real domain        -> production API
+     - served from any real domain         -> production API
 
    TO GO LIVE: set PRODUCTION_API_BASE below to the real HTTPS API URL.
    That is the only line that needs to change.
 */
 (function () {
   // <<< SET THIS BEFORE DEPLOYING >>>
-  const PRODUCTION_API_BASE = 'https://silverwind-website.onrender.com';
-
+  const PRODUCTION_API_BASE = 'https://silverwind.website';
   const LOCAL_API_BASE = 'http://localhost:4100';
 
   const host = window.location.hostname;
