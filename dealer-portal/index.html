@@ -19,7 +19,15 @@
     <h1>Dealer Application Portal</h1>
     <p class="muted">Sign in with the agent account your admin created for you. This is separate from the main Admin Panel — it only opens Dealer Applications.</p>
     <label class="fld"><span>Email</span><input type="email" id="portal-email" autocomplete="username"></label>
-    <label class="fld"><span>Password</span><input type="password" id="portal-password" autocomplete="current-password"></label>
+    
+    <label class="fld" style="position: relative;">
+      <span>Password</span>
+      <div style="position: relative; display: flex; align-items: center;">
+        <input type="password" id="portal-password" autocomplete="current-password" style="width: 100%; padding-right: 40px;">
+        <button type="button" id="toggle-portal-password" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 14px;" title="Toggle Password">👁️</button>
+      </div>
+    </label>
+
     <button class="btn btn-primary" id="portal-login-btn" style="width:100%; justify-content:center;">Sign in</button>
     <p class="err" id="portal-login-error"></p>
   </div>
@@ -71,5 +79,16 @@
 
 <script src="../assets/js/api-config.js"></script>
 <script src="js/dealer-portal.js"></script>
+<script>
+  const togglePortalBtn = document.getElementById('toggle-portal-password');
+  const portalPasswordInput = document.getElementById('portal-password');
+  if (togglePortalBtn && portalPasswordInput) {
+    togglePortalBtn.addEventListener('click', () => {
+      const type = portalPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      portalPasswordInput.setAttribute('type', type);
+      togglePortalBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+  }
+</script>
 </body>
 </html>

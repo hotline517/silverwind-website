@@ -19,7 +19,15 @@
     <h1>Admin sign in</h1>
     <p class="muted">Full access to the site. Agent accounts (for Dealer Applications only) sign in separately at the Dealer Application Portal, not here.</p>
     <label class="fld"><span>Email</span><input type="email" id="login-email" autocomplete="username"></label>
-    <label class="fld"><span>Password</span><input type="password" id="login-password" autocomplete="current-password"></label>
+    
+    <label class="fld" style="position: relative;">
+      <span>Password</span>
+      <div style="position: relative; display: flex; align-items: center;">
+        <input type="password" id="login-password" autocomplete="current-password" style="width: 100%; padding-right: 40px;">
+        <button type="button" id="toggle-admin-password" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 14px;" title="Toggle Password">👁️</button>
+      </div>
+    </label>
+
     <button class="btn btn-primary" id="login-btn" style="width:100%; justify-content:center;">Sign in</button>
     <p class="err" id="login-error"></p>
   </div>
@@ -236,5 +244,16 @@
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/admin-inventory.js"></script>
 <script src="assets/js/admin-agents.js"></script>
+<script>
+  const toggleAdminBtn = document.getElementById('toggle-admin-password');
+  const adminPasswordInput = document.getElementById('login-password');
+  if (toggleAdminBtn && adminPasswordInput) {
+    toggleAdminBtn.addEventListener('click', () => {
+      const type = adminPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      adminPasswordInput.setAttribute('type', type);
+      toggleAdminBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+  }
+</script>
 </body>
 </html>
