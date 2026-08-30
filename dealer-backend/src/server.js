@@ -48,6 +48,26 @@ app.use('/api/admin/inventory', inventoryRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/chat', chatRouter);
 
+// Temporary settings endpoint implementation to fix 404 on frontend loadSettings()
+app.get('/api/settings', async (req, res) => {
+  try {
+    // Kung mayroon kang database pool o settings table, maaari mong kunin dito.
+    // Pansamantalang nagbabalik ng empty object o defaults kung wala pa.
+    res.json({});
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load settings' });
+  }
+});
+
+app.patch('/api/settings', async (req, res) => {
+  try {
+    // Dito ilalagay ang logic para i-save ang settings sa database patch
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save settings' });
+  }
+});
+
 // I-serve ang static frontend files mula sa root folder
 app.use(express.static(path.join(__dirname, '../../')));
 
