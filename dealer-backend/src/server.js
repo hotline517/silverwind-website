@@ -20,13 +20,16 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.use(helmet({
-  contentSecurityPolicy: false, // Inalis muna para hindi harangan ang mga assets at inline scripts ng frontend mo
+  contentSecurityPolicy: false,
 }));
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '').split(',').map(s => s.trim()).filter(Boolean);
+// Kunin ang allowed origins at idagdag ang default cPanel domain para sigurado
+const envOrigins = (process.env.ALLOWED_ORIGINS ?? '').split(',').map(s => s.trim()).filter(Boolean);
+const allowedOrigins = [...new Set([...envOrigins, 'https://silverwind.website', 'http://localhost:4100'])];
+
 app.use(cors({
   origin(origin, cb) {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) return cb(null, true);
     cb(new Error('Not allowed by CORS'));
   },
   credentials: true
@@ -45,7 +48,7 @@ app.use('/api/admin/inventory', inventoryRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/chat', chatRouter);
 
-// I-serve ang static frontend files mula sa root folder (dalawang level pataas mula sa src)
+// I-serve ang static frontend files mula sa root folder
 app.use(express.static(path.join(__dirname, '../../')));
 
 // Fallback para sa anumang route na hindi natagpuan sa API

@@ -23,7 +23,7 @@ const DB = (() => {
   // ---------- public loaders / database fetchers ----------
   async function loadTires() {
     try {
-      const res = await fetch(`${API_BASE}/api/tires`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/api/inventory/public?type=tire`, { credentials: 'include' });
       if (!res.ok) return [];
       return await res.json();
     } catch { return []; }
@@ -31,7 +31,7 @@ const DB = (() => {
 
   async function loadMags() {
     try {
-      const res = await fetch(`${API_BASE}/api/mags`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/api/inventory/public?type=mag`, { credentials: 'include' });
       if (!res.ok) return [];
       return await res.json();
     } catch { return []; }
@@ -39,7 +39,7 @@ const DB = (() => {
 
   async function loadFourXFour() {
     try {
-      const res = await fetch(`${API_BASE}/api/fourxfour`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/api/inventory/public?type=4x4`, { credentials: 'include' });
       if (!res.ok) return [];
       return await res.json();
     } catch { return []; }
@@ -47,7 +47,7 @@ const DB = (() => {
 
   async function loadCamping() {
     try {
-      const res = await fetch(`${API_BASE}/api/camping`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/api/inventory/public?type=camping`, { credentials: 'include' });
       if (!res.ok) return [];
       return await res.json();
     } catch { return []; }
