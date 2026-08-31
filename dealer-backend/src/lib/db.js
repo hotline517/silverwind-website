@@ -6,7 +6,9 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Always call through here — never build SQL with string concatenation.
