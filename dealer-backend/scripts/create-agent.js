@@ -31,9 +31,9 @@ await client.connect();
 
 const hash = await bcrypt.hash(password, 12);
 const { rows } = await client.query(
-  `insert into agents (full_name, email, password_hash, role)
+  `insert into agents (name, email, password_hash, role)
    values ($1, $2, $3, $4)
-   on conflict (email) do update set password_hash = excluded.password_hash, full_name = excluded.full_name, role = excluded.role
+   on conflict (email) do update set password_hash = excluded.password_hash, name = excluded.name, role = excluded.role
    returning id, email, role`,
   [fullName, email.toLowerCase(), hash, role]
 );
