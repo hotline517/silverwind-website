@@ -8,7 +8,9 @@ const files = fs.readdirSync(dir).filter(f => f.endsWith('.sql')).sort();
 
 const client = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 await client.connect();
