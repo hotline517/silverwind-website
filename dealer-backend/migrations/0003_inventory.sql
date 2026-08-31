@@ -5,10 +5,15 @@
 -- neither export has a price column — price is admin-entered only and
 -- CSV import must never blank out an existing price.
 
-create type inventory_change_field as enum ('stock', 'price');
-create type inventory_change_source as enum ('CSV_IMPORT', 'ADMIN_MANUAL');
+DO $$ BEGIN
+  create type inventory_change_field as enum ('stock', 'price');
+EXCEPTION WHEN duplicate_object THEN null; END $$;
 
-create table inventory_products (
+DO $$ BEGIN
+  create type inventory_change_source as enum ('CSV_IMPORT', 'ADMIN_MANUAL');
+EXCEPTION WHEN duplicate_object THEN null; END $$;
+
+create table if not exists inventory_products (
   id uuid primary key default gen_random_uuid(),
   sku text unique not null,              -- CSV "Item Code"
   name text not null,                    -- CSV "Item Name"
@@ -26,9 +31,9 @@ create table inventory_products (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index on inventory_products (item_type);
+create index if not exists inventory_products_item_type_idx on inventory_products (item_type);
 
-create table inventory_stock_by_warehouse (
+create table if not exists inventory_stock_by_warehouse (
   id uuid primary key default gen_random_uuid(),
   product_id uuid not null references inventory_products(id) on delete cascade,
   warehouse text not null,
@@ -38,7 +43,7 @@ create table inventory_stock_by_warehouse (
 
 -- One row per field change, so "what changed and why" is always visible —
 -- covers both CSV-driven stock updates and admin manual price/stock edits.
-create table inventory_change_history (
+create table if not exists inventory_change_history (
   id bigserial primary key,
   product_id uuid not null references inventory_products(id) on delete cascade,
   field inventory_change_field not null,
@@ -48,4 +53,4 @@ create table inventory_change_history (
   changed_by uuid references agents(id),
   created_at timestamptz not null default now()
 );
-create index on inventory_change_history (product_id, created_at);
+create index if not exists inventory_change_history_product_id_created_at_idx on inventory_change_history (product_id, created_at);

@@ -5,17 +5,23 @@
 
 create extension if not exists pgcrypto; -- gen_random_uuid()
 
-create type application_status as enum (
-  'NEW', 'UNDER_REVIEW', 'CONTACTED', 'QUALIFIED', 'APPROVED', 'REJECTED'
-);
+DO $$ BEGIN
+  create type application_status as enum (
+    'NEW', 'UNDER_REVIEW', 'CONTACTED', 'QUALIFIED', 'APPROVED', 'REJECTED'
+  );
+EXCEPTION WHEN duplicate_object THEN null; END $$;
 
-create type property_status as enum ('OWNED', 'RENTED');
+DO $$ BEGIN
+  create type property_status as enum ('OWNED', 'RENTED');
+EXCEPTION WHEN duplicate_object THEN null; END $$;
 
-create type agent_role as enum ('agent', 'admin');
+DO $$ BEGIN
+  create type agent_role as enum ('agent', 'admin');
+EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 -- Internal staff only. Applicants never get a row here — they don't need
 -- an account per the current spec (public wizard, no login).
-create table agents (
+create table if not exists agents (
   id uuid primary key default gen_random_uuid(),
   full_name text not null,
   email text unique not null,
@@ -25,7 +31,7 @@ create table agents (
   created_at timestamptz not null default now()
 );
 
-create table dealer_applications (
+create table if not exists dealer_applications (
   id uuid primary key default gen_random_uuid(),
   application_reference text unique not null,   -- assigned atomically on submit, e.g. SWD-2026-000001
   status application_status not null default 'NEW',
@@ -62,12 +68,12 @@ create table dealer_applications (
   updated_at timestamptz not null default now(),
   submitted_at timestamptz not null default now()
 );
-create index on dealer_applications (status);
-create index on dealer_applications (assigned_agent_id);
+create index if not exists dealer_applications_status_idx on dealer_applications (status);
+create index if not exists dealer_applications_assigned_agent_id_idx on dealer_applications (assigned_agent_id);
 
 -- One row per uploaded file. stored_filename is a random name on disk —
 -- never trust or reuse the client-supplied original_filename for storage.
-create table application_documents (
+create table if not exists application_documents (
   id uuid primary key default gen_random_uuid(),
   application_id uuid not null references dealer_applications(id) on delete cascade,
   document_type text not null,        -- BUSINESS_PERMIT, VALID_ID, STORE_PHOTO, OTHER
@@ -77,9 +83,9 @@ create table application_documents (
   file_size integer not null,
   uploaded_at timestamptz not null default now()
 );
-create index on application_documents (application_id);
+create index if not exists application_documents_application_id_idx on application_documents (application_id);
 
-create table application_references (
+create table if not exists application_references (
   id uuid primary key default gen_random_uuid(),
   application_id uuid not null references dealer_applications(id) on delete cascade,
   position smallint not null,
@@ -91,9 +97,9 @@ create table application_references (
   years_known text,
   notes text
 );
-create index on application_references (application_id);
+create index if not exists application_references_application_id_idx on application_references (application_id);
 
-create table application_status_history (
+create table if not exists application_status_history (
   id bigserial primary key,
   application_id uuid not null references dealer_applications(id) on delete cascade,
   agent_id uuid references agents(id),
@@ -104,7 +110,7 @@ create table application_status_history (
 
 -- Internal only. The applicant has no account and no route that could ever
 -- read this table — enforced in the API layer (no public endpoint touches it).
-create table application_notes (
+create table if not exists application_notes (
   id bigserial primary key,
   application_id uuid not null references dealer_applications(id) on delete cascade,
   agent_id uuid not null references agents(id),
@@ -112,7 +118,7 @@ create table application_notes (
   created_at timestamptz not null default now()
 );
 
-create table application_counters (
+create table if not exists application_counters (
   year int primary key,
   last_seq int not null default 0
 );
