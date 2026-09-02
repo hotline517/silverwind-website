@@ -11,7 +11,7 @@ const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHead
 
 const COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: 'lax',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   secure: process.env.NODE_ENV === 'production',
   maxAge: 8 * 60 * 60 * 1000
 };
@@ -22,8 +22,7 @@ agentAuthRouter.post('/login', loginLimiter, asyncHandler(async (req, res) => {
 
   const { rows } = await query('select * from agents where email = $1 and active', [String(email).trim().toLowerCase()]);
   const agent = rows[0];
-  // Same message whether the email doesn't exist or the password is wrong —
-  // don't let a login form confirm which accounts exist.
+
   const wrong = () => res.status(401).json({ error: 'Incorrect email or password.' });
   if (!agent) return wrong();
 
@@ -37,7 +36,11 @@ agentAuthRouter.post('/login', loginLimiter, asyncHandler(async (req, res) => {
 }));
 
 agentAuthRouter.post('/logout', (req, res) => {
-  res.clearCookie('agent_session', { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+  res.clearCookie('agent_session', {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production'
+  });
   res.json({ ok: true });
 });
 

@@ -2,8 +2,6 @@ import 'dotenv/config';
 import pg from 'pg';
 import bcrypt from 'bcryptjs';
 
-// Deliberately a CLI script, not a public endpoint — agent accounts are
-// internal and are never created through self-registration.
 function arg(name) {
   const hit = process.argv.find(a => a.startsWith(`--${name}=`));
   return hit ? hit.slice(name.length + 3) : undefined;
@@ -15,7 +13,7 @@ const fullName = arg('name');
 const role = arg('role') || 'agent';
 
 if (!email || !password || !fullName) {
-  console.error('Usage: npm run create-agent -- --email=you@x.com --password=secret --name="Full Name" --role=admin');
+  console.error('Usage: node scripts/create-agent.js --email=you@x.com --password=secret --name="Full Name" --role=admin');
   process.exit(1);
 }
 if (!['agent', 'admin'].includes(role)) {
@@ -31,9 +29,9 @@ await client.connect();
 
 const hash = await bcrypt.hash(password, 12);
 const { rows } = await client.query(
-  `insert into agents (name, email, password_hash, role)
+  `insert into agents (full_name, email, password_hash, role)
    values ($1, $2, $3, $4)
-   on conflict (email) do update set password_hash = excluded.password_hash, name = excluded.name, role = excluded.role
+   on conflict (email) do update set password_hash = excluded.password_hash, full_name = excluded.full_name, role = excluded.role
    returning id, email, role`,
   [fullName, email.toLowerCase(), hash, role]
 );
