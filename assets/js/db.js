@@ -24,33 +24,49 @@ const DB = (() => {
   async function loadTires() {
     try {
       const res = await fetch(`${API_BASE}/api/inventory/public?type=tire`, { credentials: 'include' });
-      if (!res.ok) return [];
-      return await res.json();
-    } catch { return []; }
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+      throw new Error('empty');
+    } catch {
+      return (typeof TIRE_ROWS !== 'undefined') ? TIRE_ROWS : [];
+    }
   }
 
   async function loadMags() {
     try {
       const res = await fetch(`${API_BASE}/api/inventory/public?type=mag`, { credentials: 'include' });
-      if (!res.ok) return [];
-      return await res.json();
-    } catch { return []; }
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+      throw new Error('empty');
+    } catch {
+      return (typeof MAG_ROWS !== 'undefined') ? MAG_ROWS : [];
+    }
   }
 
   async function loadFourXFour() {
     try {
       const res = await fetch(`${API_BASE}/api/inventory/public?type=4x4`, { credentials: 'include' });
-      if (!res.ok) return [];
-      return await res.json();
-    } catch { return []; }
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+      throw new Error('empty');
+    } catch {
+      return (typeof FOURXFOUR_ROWS !== 'undefined') ? FOURXFOUR_ROWS : (typeof X4_ROWS !== 'undefined' ? X4_ROWS : []);
+    }
   }
 
   async function loadCamping() {
     try {
       const res = await fetch(`${API_BASE}/api/inventory/public?type=camping`, { credentials: 'include' });
-      if (!res.ok) return [];
-      return await res.json();
-    } catch { return []; }
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+      throw new Error('empty');
+    } catch {
+      return (typeof CAMPING_ROWS !== 'undefined') ? CAMPING_ROWS : [];
+    }
   }
 
   async function loadSettings() {
