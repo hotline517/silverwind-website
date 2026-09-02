@@ -11,7 +11,7 @@
 */
 (function () {
   // <<< SET THIS TO YOUR RENDER BACKEND URL >>>
-  const PRODUCTION_API_BASE = 'https://silverwind-website.onrender.com';
+ const API_BASE_URL = 'https://silverwind.website';
   const LOCAL_API_BASE = 'http://localhost:4100';
 
   const host = window.location.hostname;
