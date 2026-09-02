@@ -1,17 +1,8 @@
 /* api-config.js — the ONE place the API base URL is defined.
    Load this before any script that talks to the backend.
-
-   It auto-detects the environment, so the same files work locally and in
-   production with no edit at deploy time:
-     - served from localhost / 127.0.0.1  -> local dev backend
-     - served from any real domain        -> production API
-
-   TO GO LIVE: set PRODUCTION_API_BASE below to the real HTTPS API URL.
-   That is the only line that needs to change.
 */
 (function () {
-  // <<< SET THIS TO YOUR RENDER BACKEND URL >>>
- const API_BASE_URL = 'https://silverwind.website';
+  const PRODUCTION_API_BASE = 'https://silverwind-website.onrender.com';
   const LOCAL_API_BASE = 'http://localhost:4100';
 
   const host = window.location.hostname;
