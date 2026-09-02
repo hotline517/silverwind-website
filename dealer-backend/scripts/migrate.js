@@ -29,10 +29,10 @@ try {
   if (checkAdmin.rows.length === 0) {
     console.log('Creating default admin account...');
     const hashedPassword = await bcrypt.hash('AdminPassword123!', 10);
-    await client.query(
-      `INSERT INTO agents (name, email, password_hash, role, status) VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
-      ['Super Admin', adminEmail, hashedPassword, 'admin', 'active']
-    );
+  await client.query(
+  `INSERT INTO agents (full_name, email, password_hash, role, active) VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+  ['Super Admin', adminEmail, hashedPassword, 'admin', true]
+);
     console.log('Default admin created successfully (Email: admin@silverwind.website, Pass: AdminPassword123!).');
   }
 
