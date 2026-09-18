@@ -115,7 +115,7 @@ const DB = (() => {
     });
   }
 
-  // ---------- admin write helpers (updated to use /api/catalog) ----------
+  // ---------- admin write helpers ----------
   async function addRow(table, row) {
     try {
       const kind = table === 'tires' ? 'tire' : (table === 'mags' ? 'mag' : 'fourxfour');
@@ -141,7 +141,10 @@ const DB = (() => {
       });
       if (!res.ok) throw new Error('Failed to update item');
       return true;
-    } catch (e) { alert(e.message); return false; }
+    } catch (e) { 
+      console.error(e); 
+      return false; 
+    }
   }
 
   async function deleteRow(table, id) {
