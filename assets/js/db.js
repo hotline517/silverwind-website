@@ -115,10 +115,11 @@ const DB = (() => {
     });
   }
 
-  // ---------- admin write helpers ----------
+  // ---------- admin write helpers (updated to use /api/catalog) ----------
   async function addRow(table, row) {
     try {
-      const res = await fetch(`${API_BASE}/api/${table}`, {
+      const kind = table === 'tires' ? 'tire' : (table === 'mags' ? 'mag' : 'fourxfour');
+      const res = await fetch(`${API_BASE}/api/catalog/${kind}`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -131,7 +132,8 @@ const DB = (() => {
 
   async function updateRow(table, id, patch) {
     try {
-      const res = await fetch(`${API_BASE}/api/${table}/${id}`, {
+      const kind = table === 'tires' ? 'tire' : (table === 'mags' ? 'mag' : 'fourxfour');
+      const res = await fetch(`${API_BASE}/api/catalog/${kind}/${id}`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -144,7 +146,8 @@ const DB = (() => {
 
   async function deleteRow(table, id) {
     try {
-      const res = await fetch(`${API_BASE}/api/${table}/${id}`, {
+      const kind = table === 'tires' ? 'tire' : (table === 'mags' ? 'mag' : 'fourxfour');
+      const res = await fetch(`${API_BASE}/api/catalog/${kind}/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
