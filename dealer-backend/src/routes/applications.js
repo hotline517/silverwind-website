@@ -116,9 +116,6 @@ applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(asy
 
     res.status(201).json({ ok: true, applicationReference: result.application_reference });
   } catch (err) {
-    // Roll back any files already written to disk — the DB transaction
-    // above already rolled itself back, but the filesystem writes are not
-    // part of that transaction.
     await Promise.all(savedPaths.map(p => fs.unlink(p).catch(() => {})));
     console.error('submitApplication failed:', err.message);
     res.status(500).json({ error: `Submission failed: ${err.message}` });
