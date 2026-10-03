@@ -5,17 +5,13 @@ import { requireAgent, requireAdmin } from '../middleware/requireAgent.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 import { hashPassword } from '../lib/auth.js';
 
-// Agent accounts are managed ONLY from here — the Admin Panel's Agents tab.
-// There is no public agent registration, and the Dealer Application Portal
-// has no create-account flow of its own; it only ever logs in against
-// accounts this router created.
 export const agentsRouter = Router();
-agentsRouter.use(requireAgent, requireAdmin); // every route here is admin-only
+agentsRouter.use(requireAgent, requireAdmin);
 
 const createSchema = z.object({
   full_name: z.string().trim().min(1, 'Name is required.'),
   email: z.string().trim().email('Enter a valid email.'),
-  password: z.string().min(8, 'Password must be at least 8 characters.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
   role: z.enum(['agent', 'admin']).default('agent')
 });
 
@@ -85,7 +81,7 @@ agentsRouter.patch('/:id', asyncHandler(async (req, res) => {
 agentsRouter.post('/:id/reset-password', asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { password } = req.body ?? {};
-  if (!password || password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  if (!password || password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters.' });
 
   const password_hash = await hashPassword(password);
   const { rowCount } = await query('update agents set password_hash = $1 where id = $2', [password_hash, id]);
@@ -102,9 +98,6 @@ agentsRouter.delete('/:id', asyncHandler(async (req, res) => {
     if (!rowCount) return res.status(404).json({ error: 'Agent not found.' });
     res.json({ ok: true });
   } catch (err) {
-    // FK violation — this agent has notes, status history, or assigned
-    // applications on record. Deleting would silently erase audit trail
-    // attribution, so we refuse and point at the reversible alternative.
     if (err.code === '23503') {
       return res.status(409).json({ error: 'This agent has application history on record — disable the account instead of deleting it.' });
     }
