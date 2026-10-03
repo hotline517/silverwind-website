@@ -19,8 +19,6 @@ const upload = multer({
 
 const submitLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false });
 
-// multipart: JSON fields under `payload`, files under `documents`
-// (each file's field name doubles as its document_type, validated below).
 applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(async (req, res) => {
   let payload;
   try {
@@ -118,6 +116,6 @@ applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(asy
   } catch (err) {
     await Promise.all(savedPaths.map(p => fs.unlink(p).catch(() => {})));
     console.error('submitApplication failed:', err.message);
-    res.status(500).json({ error: `Submission failed: ${err.message}` });
+    res.status(500).json({ error: `Debug Error: ${err.message}` });
   }
 }));
