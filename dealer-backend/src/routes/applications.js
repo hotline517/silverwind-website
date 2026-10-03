@@ -54,8 +54,13 @@ applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(asy
 
   try {
     const result = await withTransaction(async (client) => {
-      const { rows: [{ next_application_reference: reference }] } =
-        await client.query('select next_application_reference()');
+      let reference;
+      try {
+        const refRes = await client.query('select next_application_reference()');
+        reference = refRes.rows[0].next_application_reference;
+      } catch (e) {
+        reference = `SW-${Math.floor(100000 + Math.random() * 900000)}`;
+      }
 
       const { rows: [app] } = await client.query(
         `insert into dealer_applications
@@ -73,14 +78,16 @@ applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(asy
          property.location_notes || null, declaration_accepted]
       );
 
-      for (const [i, r] of references.entries()) {
-        await client.query(
-          `insert into application_references
-            (application_id, position, reference_name, company, contact_number, email, relationship, years_known, notes)
-           values ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-          [app.id, i + 1, r.reference_name, r.company || null, r.contact_number || null, r.email || null,
-           r.relationship || null, r.years_known || null, r.notes || null]
-        );
+      if (references && Array.isArray(references)) {
+        for (const [i, r] of references.entries()) {
+          await client.query(
+            `insert into application_references
+              (application_id, position, reference_name, company, contact_number, email, relationship, years_known, notes)
+             values ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+            [app.id, i + 1, r.reference_name, r.company || null, r.contact_number || null, r.email || null,
+             r.relationship || null, r.years_known || null, r.notes || null]
+          );
+        }
       }
 
       await client.query(
@@ -113,7 +120,7 @@ applicationsRouter.post('/submit', submitLimiter, upload.any(), asyncHandler(asy
     // above already rolled itself back, but the filesystem writes are not
     // part of that transaction.
     await Promise.all(savedPaths.map(p => fs.unlink(p).catch(() => {})));
-    console.error('submitApplication failed:', err);
-    res.status(500).json({ error: "We couldn't submit your application right now. Please try again." });
+    console.error('submitApplication failed:', err.message);
+    res.status(500).json({ error: `Submission failed: ${err.message}` });
   }
 }));
