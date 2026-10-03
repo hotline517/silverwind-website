@@ -90,7 +90,6 @@
   /* ============================================================
      STEP 4 — references (1..5)
      ============================================================ */
-  const REFERENCE_FIELDS = ['reference_name','company','contact_number','email','relationship','years_known','notes'];
   const referencesList = $('#referencesList');
 
   function renderReferences() {
@@ -253,7 +252,7 @@
   const submitResult = $('#submitResult');
 
   submitBtn.addEventListener('click', async () => {
-    if (submitting) return; // synchronous re-entrancy guard, not just the disabled attribute
+    if (submitting) return; 
     const errors = validateStep(5);
     const errEl = $('[data-err-for="5"]');
     if (errors.length) { errEl.textContent = errors.join(' '); return; }
@@ -281,13 +280,14 @@
       fd.append('payload', JSON.stringify(payload));
       Object.entries(documents).forEach(([type, file]) => fd.append(type, file));
 
-      const res = await fetch(`${dealerAppConfig.apiBaseUrl}/api/applications/submit`, {
+      // Ipinapasa sa tamang backend route na /api/dealer/applications/submit
+      const res = await fetch(`${dealerAppConfig.apiBaseUrl}/api/dealer/applications/submit`, {
         method: 'POST', body: fd
       });
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        errEl.textContent = data.error || "We couldn't submit your application right now. Please try again.";
+        errEl.textContent = data.error || `Server Error (${res.status}): ${JSON.stringify(data)}`;
         return;
       }
 
@@ -298,8 +298,8 @@
       success.hidden = false;
       $('#successRef').textContent = data.applicationReference;
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch {
-      errEl.textContent = "We couldn't submit your application right now. Please check your connection and try again.";
+    } catch (err) {
+      errEl.textContent = `Connection/JS Error: ${err.message}`;
     } finally {
       submitting = false;
       submitBtn.disabled = false;
