@@ -280,8 +280,8 @@
       fd.append('payload', JSON.stringify(payload));
       Object.entries(documents).forEach(([type, file]) => fd.append(type, file));
 
-      // Ipinapasa sa tamang backend route na /api/dealer/applications/submit
-      const res = await fetch(`${dealerAppConfig.apiBaseUrl}/api/dealer/applications/submit`, {
+      // Itinatama ang ruta patungo sa tamang /api/applications/submit endpoint
+      const res = await fetch(`${dealerAppConfig.apiBaseUrl}/api/applications/submit`, {
         method: 'POST', body: fd
       });
       const data = await res.json().catch(() => ({}));
