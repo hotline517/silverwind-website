@@ -39,20 +39,16 @@
   }
 
   function showLogin() {
-    $('portal-login-gate').style.display = '';
-    $('portal-app').style.display = 'none';
+    $('portal-login-gate').style.display = '';$('portal-app').style.display = 'none';
   }
   function showApp() {
     $('portal-login-gate').style.display = 'none';
-    $('portal-app').style.display = '';
-    $('portal-whoami').textContent = `Signed in as ${currentAgent.full_name} (${currentAgent.role})`;
+    $('portal-app').style.display = '';$('portal-whoami').textContent = `Signed in as ${currentAgent.full_name} (${currentAgent.role})`;
     $('portal-welcome').textContent = `Welcome, ${currentAgent.full_name}`;
     loadStats();
     loadApplications();
   }
 
-  // Dashboard counts always reflect ALL applications, independent of
-  // whatever filter is currently applied to the table below.
   async function loadStats() {
     try {
       const { applications: all } = await api('/api/admin/applications');
@@ -103,8 +99,7 @@
       $('portal-table').innerHTML = `<tr><td>Couldn't load applications (${esc(e.message)}).</td></tr>`;
     }
   }
-  $('portal-search').addEventListener('input', debounce(loadApplications, 300));
-  $('portal-status-filter').addEventListener('change', loadApplications);
+  $('portal-search').addEventListener('input', debounce(loadApplications, 300));$('portal-status-filter').addEventListener('change', loadApplications);
   function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
   function renderTable() {
@@ -120,7 +115,7 @@
           <td class="mono">${esc(a.application_reference)}</td>
           <td>${esc(a.business_name)}</td>
           <td>${esc(a.contact_person)}</td>
-          <td>${esc(a.city)}, ${esc(a.province)}</td>
+          <td>${esc(a.city)},${esc(a.province)}</td>
           <td>${new Date(a.submitted_at).toLocaleDateString()}</td>
           <td><span class="status-badge status-${a.status}">${STATUS_LABELS[a.status]}</span></td>
           <td>${esc(a.assigned_agent_name) || '<span class="muted">Unassigned</span>'}</td>
@@ -154,60 +149,121 @@
       ['Postal code', a.postal_code], ['Contact number', a.contact_number], ['Email', a.email],
       ['Website', a.website], ['Facebook', a.facebook_page], ['Years in business', a.years_in_business]
     ].filter(([, v]) => v);
+
     const propertyRows = [
       ['Store address', a.store_address], ['Property status', a.property_status], ['Store size', a.store_size],
       ['Operation info', a.operation_info], ['Location notes', a.location_notes]
     ].filter(([, v]) => v);
 
+    let docsHtml = '<p class="muted">No documents uploaded.</p>';
+    if (documents && documents.length) {
+      const docItems = documents.map(d => {
+        const sizeKb = (d.file_size / 1024).toFixed(0);
+        return '<li><a href="' + API_BASE + '/api/admin/applications/' + a.id + '/documents/' + d.id + '/download" target="_blank" rel="noopener">' +
+          esc(d.document_type) + ' — ' + esc(d.original_filename) + '</a> <span class="muted">(' + sizeKb + ' KB)</span></li>';
+      }).join('');
+      docsHtml = '<ul class="da-doc-list">' + docItems + '</ul>';
+    }
+
+    let refsHtml = '<p class="muted">None.</p>';
+    if (references && references.length) {
+      refsHtml = references.map(r => {
+        return '<dl class="da-dl"><dt>Name</dt><dd>' + esc(r.reference_name) + '</dd>' +
+          '<dt>Company</dt><dd>' + (esc(r.company) || '—') + '</dd>' +
+          '<dt>Contact</dt><dd>' + (esc(r.contact_number) || '—') + ' ' + (esc(r.email) || '') + '</dd>' +
+          '<dt>Relationship</dt><dd>' + (esc(r.relationship) || '—') + '</dd></dl>';
+      }).join('');
+    }
+
+    let notesHtml = '<p class="muted">No notes yet.</p>';
+    if (notes && notes.length) {
+      notesHtml = notes.map(n => {
+        return '<div class="da-note"><b>' + esc(n.agent_name) + '</b> <span class="muted">' + new Date(n.created_at).toLocaleString() + '</span><p>' + esc(n.body) + '</p></div>';
+      }).join('');
+    }
+
+    let historyHtml = '';
+    if (history && history.length) {
+      historyHtml = history.map(h => {
+        const fromPart = h.from_status ? esc(h.from_status) + ' → ' : '';
+        const agentPart = h.agent_name ? ' by ' + esc(h.agent_name) : '';
+        return '<li>' + fromPart + esc(h.to_status) + ' <span class="muted">— ' + new Date(h.created_at).toLocaleString() + agentPart + '</span></li>';
+      }).join('');
+    }
+
+    const isAdmin = currentAgent && currentAgent.role === 'admin';
+    const deleteBtnHtml = isAdmin ? '<button class="btn" id="portal-delete-btn" style="background: #dc2626; color: white; flex: 1; justify-content: center;">Delete Application</button>' : '';
+    const assignSectionHtml = isAdmin ? `
+      <h3 style="margin-top:18px;">Assigned agent</h3>
+      <p class="muted" style="font-size:12.5px;">${esc(a.assigned_agent_name) || 'Unassigned'}</p>
+      <button class="btn btn-outline-dark" id="portal-assign-me" style="width:100%;justify-content:center;">Assign to me</button>
+    ` : '';
+
+    const statusOptions = STATUSES.map(s => '<option value="' + s + '" ' + (s === a.status ? 'selected' : '') + '>' + STATUS_LABELS[s] + '</option>').join('');
+
     return `
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button class="btn btn-outline-dark" id="portal-print-btn" style="flex: 1; justify-content: center;">Print / PDF</button>
+        ${deleteBtnHtml}
+      </div>
       <div class="da-detail-grid">
         <div>
           <h3>Business Information</h3>
-          <dl class="da-dl">${businessRows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+          <dl class="da-dl">${businessRows.map(([k, v]) => '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>').join('')}</dl>
           <h3>Business / Property Information</h3>
-          <dl class="da-dl">${propertyRows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('') || '<dd class="muted">Nothing entered</dd>'}</dl>
+          <dl class="da-dl">${propertyRows.map(([k, v]) => '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>').join('') || '<dd class="muted">Nothing entered</dd>'}</dl>
           <h3>Documents</h3>
-          ${documents.length ? `<ul class="da-doc-list">${documents.map(d => `
-            <li><a href="${API_BASE}/api/admin/applications/${a.id}/documents/${d.id}/download" target="_blank" rel="noopener">
-              ${esc(d.document_type)} — ${esc(d.original_filename)}</a> <span class="muted">(${(d.file_size/1024).toFixed(0)} KB)</span></li>`).join('')}</ul>`
-            : '<p class="muted">No documents uploaded.</p>'}
+          ${docsHtml}
           <h3>References</h3>
-          ${references.length ? references.map(r => `
-            <dl class="da-dl"><dt>Name</dt><dd>${esc(r.reference_name)}</dd>
-            <dt>Company</dt><dd>${esc(r.company) || '—'}</dd>
-            <dt>Contact</dt><dd>${esc(r.contact_number) || '—'} ${esc(r.email) || ''}</dd>
-            <dt>Relationship</dt><dd>${esc(r.relationship) || '—'}</dd></dl>`).join('')
-            : '<p class="muted">None.</p>'}
+          ${refsHtml}
         </div>
         <div>
           <h3>Status</h3>
           <select class="admin-search" id="portal-status-select">
-            ${STATUSES.map(s => `<option value="${s}" ${s === a.status ? 'selected' : ''}>${STATUS_LABELS[s]}</option>`).join('')}
+            ${statusOptions}
           </select>
           <button class="btn btn-primary" id="portal-status-save" style="margin-top:8px;width:100%;justify-content:center;">Update status</button>
           <p class="err" id="portal-status-error"></p>
 
-          ${currentAgent.role === 'admin' ? `
-            <h3 style="margin-top:18px;">Assigned agent</h3>
-            <p class="muted" style="font-size:12.5px;">${esc(a.assigned_agent_name) || 'Unassigned'}</p>
-            <button class="btn btn-outline-dark" id="portal-assign-me" style="width:100%;justify-content:center;">Assign to me</button>
-          ` : ''}
+          ${assignSectionHtml}
 
           <h3 style="margin-top:18px;">Internal notes <span class="muted" style="font-weight:400;">(never shown to the applicant)</span></h3>
           <div id="portal-notes-list" class="da-notes-list">
-            ${notes.map(n => `<div class="da-note"><b>${esc(n.agent_name)}</b> <span class="muted">${new Date(n.created_at).toLocaleString()}</span><p>${esc(n.body)}</p></div>`).join('') || '<p class="muted">No notes yet.</p>'}
+            ${notesHtml}
           </div>
           <textarea id="portal-note-input" rows="3" placeholder="Add an internal note…" style="width:100%;margin-top:8px;font-family:inherit;padding:8px;border:1px solid #ddd;border-radius:6px;"></textarea>
           <button class="btn btn-primary" id="portal-note-save" style="margin-top:6px;width:100%;justify-content:center;">Add note</button>
           <p class="err" id="portal-note-error"></p>
 
           <h3 style="margin-top:18px;">History</h3>
-          <ul class="da-history">${history.map(h => `<li>${h.from_status ? esc(h.from_status) + ' → ' : ''}${esc(h.to_status)} <span class="muted">— ${new Date(h.created_at).toLocaleString()}${h.agent_name ? ' by ' + esc(h.agent_name) : ''}</span></li>`).join('')}</ul>
+          <ul class="da-history">${historyHtml}</ul>
         </div>
       </div>`;
   }
 
   function wireDetail(a) {
+    const printBtn = $('portal-print-btn');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+
+    const deleteBtn = $('portal-delete-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to delete this application? This action cannot be undone.')) return;
+        try {
+          await api(`/api/admin/applications/${a.id}`, { method: 'DELETE' });
+          modal.classList.remove('is-open');
+          loadStats();
+          loadApplications();
+        } catch (e) {
+          alert(`Failed to delete: ${e.message}`);
+        }
+      });
+    }
+
     $('portal-status-save').addEventListener('click', async () => {
       const status = $('portal-status-select').value;
       const errEl = $('portal-status-error');
