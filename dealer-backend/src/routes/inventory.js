@@ -83,21 +83,26 @@ inventoryRouter.patch('/:id', asyncHandler(async (req, res) => {
   res.json({ ok: true, product: { ...updated, status: statusFor(updated.total_stock) } });
 }));
 
-// CSV import — upserts by SKU (Item Code). Stock is summed per warehouse
-// and totalled; price is left untouched (no source column in the real
-// exports) unless a recognized price header is actually present.
-inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
+// Multiple CSV import — supports multiple files uploaded simultaneously
+inventoryRouter.post('/import', upload.array('files', 10), asyncHandler(async (req, res) => {
+  const files = req.files ?? [];
+  if (!files.length) return res.status(400).json({ error: 'No files uploaded.' });
 
-  let records;
-  try {
-    records = parse(req.file.buffer, { columns: true, skip_empty_lines: true, trim: true, bom: true });
-  } catch {
-    return res.status(400).json({ error: "Couldn't read that file — make sure it's a valid CSV." });
+  let allRecords = [];
+  for (const file of files) {
+    try {
+      const records = parse(file.buffer, { columns: true, skip_empty_lines: true, trim: true, bom: true });
+      if (records && records.length) {
+        allRecords = allRecords.concat(records);
+      }
+    } catch {
+      return res.status(400).json({ error: `Couldn't read file ${file.originalname} — make sure it's a valid CSV.` });
+    }
   }
-  if (!records.length) return res.status(400).json({ error: 'The CSV has no rows.' });
 
-  const headers = Object.keys(records[0]);
+  if (!allRecords.length) return res.status(400).json({ error: 'The uploaded CSV files have no rows.' });
+
+  const headers = Object.keys(allRecords[0]);
   const skuHeader = findHeader(headers, ['item code', 'sku']);
   const nameHeader = findHeader(headers, ['item name', 'name', 'product name']);
   if (!skuHeader || !nameHeader) {
@@ -116,10 +121,8 @@ inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, 
   const boreHeader = findHeader(headers, ['bore']);
   const specHeader = findHeader(headers, ['specifications']);
 
-  // Group rows by SKU first — a single product legitimately spans multiple
-  // warehouse rows in these exports (confirmed in the real tire export).
   const bySku = new Map();
-  for (const row of records) {
+  for (const row of allRecords) {
     const sku = String(row[skuHeader] ?? '').trim();
     if (!sku) continue;
     if (!bySku.has(sku)) bySku.set(sku, { rows: [], totalStock: 0 });
@@ -130,7 +133,7 @@ inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, 
   }
 
   let created = 0, updated = 0, stockChanged = 0;
-  const skippedRows = records.length - [...bySku.values()].reduce((n, e) => n + e.rows.length, 0);
+  const skippedRows = allRecords.length - [...bySku.values()].reduce((n, e) => n + e.rows.length, 0);
 
   await withTransaction(async (client) => {
     for (const [sku, entry] of bySku) {
@@ -178,8 +181,6 @@ inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, 
         if (offsetHeader) { values.push(first[offsetHeader] || null); sets.push(`"offset" = $${values.length}`); }
         if (boreHeader) { values.push(first[boreHeader] || null); sets.push(`bore = $${values.length}`); }
         if (specHeader) { values.push(first[specHeader] || null); sets.push(`specifications = $${values.length}`); }
-        // Price: only ever touched if this CSV genuinely has a recognized
-        // price column with a usable value — never blanked to null.
         if (priceValue != null && Number.isFinite(priceValue)) {
           values.push(priceValue);
           sets.push(`price = $${values.length}`);
@@ -204,9 +205,6 @@ inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, 
         }
       }
 
-      // Per-warehouse breakdown, replacing whatever this SKU's warehouse
-      // rows said last time (a warehouse absent from this import is left
-      // as-is — the CSV represents "what we know," not "delete the rest").
       const byWarehouse = new Map();
       for (const row of entry.rows) {
         const wh = warehouseHeader ? String(row[warehouseHeader] ?? '').trim() || 'Unspecified' : 'Unspecified';
@@ -227,7 +225,7 @@ inventoryRouter.post('/import', upload.single('file'), asyncHandler(async (req, 
     ok: true,
     priceColumnDetected: !!priceHeader,
     priceColumnName: priceHeader,
-    rowsRead: records.length,
+    rowsRead: allRecords.length,
     rowsSkipped: skippedRows,
     productsCreated: created,
     productsUpdated: updated,
