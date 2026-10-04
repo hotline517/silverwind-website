@@ -21,8 +21,18 @@
     left: 0;
     top: 0;
     width: 100%;
-    height: auto;
+    height: auto !important;
     background: white;
+    overflow: visible !important;
+  }
+  .admin-modal-panel {
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    width: 100% !important;
+  }
+  #portal-detail-body {
+    max-height: none !important;
     overflow: visible !important;
   }
   .da-detail-grid {
@@ -111,7 +121,7 @@
     togglePortalBtn.addEventListener('click', () => {
       const type = portalPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       portalPasswordInput.setAttribute('type', type);
-      togglePortalBtn.textContent = type === 'password' ? '👁️' : '🙈';
+      togglePortalBtn.textContent = type === 'password' ? '👁️️' : '🙈';
     });
   }
 </script>
