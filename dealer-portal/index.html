@@ -8,6 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/styles.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
+<style>
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #portal-detail-modal, #portal-detail-modal * {
+    visibility: visible;
+  }
+  #portal-detail-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+    overflow: visible !important;
+  }
+  .da-detail-grid {
+    display: block !important;
+  }
+  #portal-print-btn, #portal-delete-btn, .admin-modal-close, .admin-modal-backdrop {
+    display: none !important;
+  }
+}
+</style>
 </head>
 <body>
 
